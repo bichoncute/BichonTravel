@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理者後台 - 比熊旅遊</title>  
+    <link rel="icon" th:href="@{/images/logo.png}" type="image/png"> 
+    <style>
+        /* 基礎現代化設定 */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, "Microsoft JhengHei";
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        /* 頂部導覽列 */
+        .top-nav {
+            background-color: #ffffff;
+            padding: 15px 40px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        /* 調整：讓 Logo 區塊變成 flex 佈局，使圖文完美垂直居中 */
+        .top-nav .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 12px; /* 圖片與文字之間的間距 */
+        }
+        
+        /* 新增：限制後台導覽列 Logo 圖片的大小 */
+        .top-nav .logo img {
+            height: 60px; /* 您可以根據您的圖片形狀調整高度（如 40px - 50px） */
+            width: auto;  /* 寬度自動等比例縮放 */
+            object-fit: contain;
+        }
+
+        .top-nav .nav-links a {
+            margin-left: 15px;
+            font-size: 14px;
+        }
+
+        /* 主區塊佈局 */
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        h1 {
+            font-size: 28px;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        /* 訊息提示框 */
+        .alert {
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .alert-success {
+            background-color: #e6f4ea;
+            color: #137333;
+            border-left: 5px solid #1ecc71;
+        }
+
+        /* 核心需求：大型管理卡片按鈕區 */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        /* 放大版的按鈕卡片樣式 */
+        .card-btn {
+            background: #ffffff;
+            padding: 30px 20px;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+
+        .card-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+
+        /* 各別卡片文字與漸層微調 */
+        .card-user { border-top: 5px solid #3498db; color: #3498db; }
+        .card-orders { border-top: 5px solid #e67e22; color: #e67e22; }   
+        .card-products { border-top: 5px solid #2ecc71; color: #2ecc71; }
+        .card-payments { border-top: 5px solid #9b59b6; color: #9b59b6; }
+		.card-orderitem { border-top: 5px solid #34443a; color: #34443a; }
+        .card-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .card-desc {
+            font-size: 13px;
+            color: #7f8c8d;
+            margin-top: 8px;
+        }
+
+        /* 通用精簡按鈕樣式 */
+        .btn {
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-block;
+            transition: background 0.2s;
+        }
+        .btn-outline {
+            border: 1px solid #bdc3c7;
+            color: #7f8c8d;
+        }
+        .btn-outline:hover {
+            background: #eee;
+            color: #333;
+        }
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        /* 表格基礎美化 */
+        table { border-collapse: collapse; width: 100%; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        th, td { padding: 14px 18px; text-align: left; }
+        th { background-color: #34495e; color: white; font-weight: 500; }
+        tr { border-bottom: 1px solid #edf2f7; }
+        tr:hover { background-color: #f8fafc; }
+    </style>
+</head>
+<body>
+
+    <!-- 頂部導覽列 -->
+    <nav class="top-nav">
+        <!-- 修正處：加入了 img 標籤並使用 th:src 讀取 Spring Boot 靜態資源 -->
+        <div class="logo">
+            <img th:src="@{/images/logo.png}" alt="比熊旅遊 Logo">
+            <span>  歡迎登入!</span>
+        </div>
+        <div class="nav-links">
+            <a th:href="@{/web/frontproducts}" class="btn btn-outline">返回首頁</a>
+            <a th:href="@{/web/dashboard/logout}" class="btn btn-danger">安全登出</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        
+        <!-- 成功訊息 -->
+        <div th:if="${successMessage}" class="alert alert-success">
+            ✨ <span th:text="${successMessage}" style="margin-left: 8px;">登入成功訊息</span>
+        </div>
+
+        <h1>管理者後台控制台</h1>
+        
+        <!-- 主要功能大按鈕區塊 -->
+        <div class="dashboard-grid">
+            
+            <a th:href="@{/web/user}" class="card-btn card-user">
+                <span style="font-size: 32px;">👥</span>
+                <div class="card-title">會員管理</div>
+                <div class="card-desc">查看與編輯會員資料</div>
+            </a>
+            
+            <a th:href="@{/web/orders}" class="card-btn card-orders">
+                <span style="font-size: 32px;">📜</span>
+                <div class="card-title">訂單管理</div>
+                <div class="card-desc">處理行程及機票訂單</div>
+            </a>
+            <a th:href="@{/web/order_item}" class="card-btn card-orderitem">
+                <span style="font-size: 32px;">📜</span>
+                <div class="card-title">訂單明細管理</div>
+                <div class="card-desc">處理所有訂單明細</div>
+            </a>
+            <a th:href="@{/web/products}" class="card-btn card-products">
+                <span style="font-size: 32px;">✈️</span>
+                <div class="card-title">商品管理</div>
+                <div class="card-desc">上架、修改旅遊行程</div>
+            </a>
+            
+            <a th:href="@{/web/payments}" class="card-btn card-payments">
+                <span style="font-size: 32px;">💰</span>
+                <div class="card-title">款項管理</div>
+                <div class="card-desc">對帳、退款與流水分帳</div>
+            </a>
+            <a th:href="@{/web/order_travelers/dash}" class="card-btn card-user">
+                <span style="font-size: 32px;">👥</span>
+                <div class="card-title">旅客管理</div>
+                <div class="card-desc">查看與編輯所有訂單的所有旅客</div>
+            </a>
+        </div>
+
+    </div>
+</body>
+</html>

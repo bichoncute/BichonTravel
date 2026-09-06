@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>會員登入 | 探索世界</title>
+    <!-- 將原本被誤放至 body 內的 favicon 移回標準的 head 區域 -->
+    <link rel="icon" th:href="@{/images/colorful.png}" type="image/png">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+    
+    <!-- 引入完整的 Google Fonts 繁體中文及旅遊風字體 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://googleapis.com" rel="stylesheet">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex; /* Flexbox 進行左右橫向佈局 */
+            background-color: #f4f7fc;
+        }
+
+        /* 左側：大氣的旅遊形象視覺區 */
+        .visual-side {
+    flex: 1.2;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    padding: 60px;
+    color: white;
+
+    position: relative;
+}
+ .visual-side::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+}
+ 
+
+        .visual-side h2 {
+            font-family: 'Playfair Display', 'Noto Sans TC', sans-serif;
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            line-height: 1.3;
+        }
+
+        .visual-side p {
+            font-size: 20px;
+            color: #e2e8f0;
+            letter-spacing: 1px;
+        }
+
+        /* 右側：寬敞獨立的登入表單區 */
+        .form-side {
+            flex: 1; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 60px;
+            background: #ffffff;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 460px; 
+        }
+
+        h1 {
+            color: #1a365d; 
+            font-size: 56px;
+            font-weight: 700;
+            margin-bottom: 40px;
+            letter-spacing: 1px;
+            position: relative;
+        }
+        
+        h1::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 5px;
+            background: #3182ce; 
+            border-radius: 3px;
+            margin-top: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 28px; 
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #2d3748;
+            font-size: 18px; 
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 16px 20px; 
+            border: 2px solid #e2e8f0; 
+            border-radius: 10px;
+            font-size: 18px; 
+            color: #1a202c;
+            transition: all 0.3s ease;
+            background-color: #f8fafc;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #3182ce; 
+            background-color: #ffffff;
+            box-shadow: 0 0 0 4px rgba(49, 130, 206, 0.15);
+        }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column; 
+            gap: 16px;
+            margin-top: 40px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px 24px; 
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 18px; 
+            font-weight: 700;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #2b6cb0;
+            color: white;
+            box-shadow: 0 4px 14px rgba(43, 108, 176, 0.25);
+        }
+
+        .btn-primary:hover {
+            background: #1a365d;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(43, 108, 176, 0.35);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #2b6cb0;
+            border: 2px solid #2b6cb0;
+        }
+
+        .btn-outline:hover {
+            background: rgba(43, 108, 176, 0.05);
+            color: #1a365d;
+            border-color: #1a365d;
+        }
+
+        .alert-danger {
+            background: #fff5f5;
+            color: #c53030;
+            border-left: 5px solid #e53e3e;
+            padding: 16px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        @media (max-width: 960px) {
+            body {
+                flex-direction: column;
+            }
+            .visual-side {
+                display: none; 
+            }
+            .form-side {
+                padding: 40px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 修正重點：優化了 th:style 的單雙引號拼接，確保輸出的 CSS 格式為完美的 url('/images/colorful.png') -->
+    <!-- 加上 th:style 屬性，利用 Thymeleaf 語法帶入背景圖片路徑 -->
+<div class="visual-side"
+     th:style="|background-image: url('@{/images/boat.jfif}')|">
+    <h2>探索世界</h2>
+    <p>開啟您的專屬旅程</p>
+</div>
+
+
+
+    <!-- 右側登入表單 -->
+    <div class="form-side">
+        <div class="container">
+            <h1>會員登入</h1>
+            
+            <!-- 錯誤訊息提示區 -->
+            <div th:if="${errorMessage}"
+                 class="alert alert-danger"
+                 th:text="${errorMessage}">
+            </div>
+            
+            <!-- 登入表單 -->
+            <form th:action="@{/web/memberlogin}" method="post" th:object="${user}">
+
+                <div class="form-group">
+                    <label for="email">電子信箱</label>
+                    <input type="email"
+                           id="email"
+                           th:field="*{email}"
+                           placeholder="example@mail.com"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password_hash">密碼</label>
+                    <input type="password"
+                           id="password_hash"
+                           th:field="*{password_hash}"
+                           placeholder="請輸入您的密碼"
+                           required>
+                </div>
+
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary">
+                        登入
+                    </button>
+                    <a th:href="@{/web/memberlogin/create}" class="btn btn-outline">
+                        註冊新帳號
+                    </a>
+                    <a th:href="@{/web/frontproducts}" class="btn btn-outline">
+                        回首頁
+                    </a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

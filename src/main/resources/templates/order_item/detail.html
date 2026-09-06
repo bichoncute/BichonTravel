@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+```
+<title>訂單明細資料詳情</title>
+
+<style>
+
+    /* =========================================================
+       基本設定
+    ========================================================= */
+
+    * {
+        box-sizing: border-box;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        margin: 0;
+        padding: 40px 20px;
+        min-height: 100vh;
+
+        font-family:
+            "Noto Serif TC",
+            "Microsoft JhengHei",
+            "PingFang TC",
+            serif;
+
+        color: #3f493f;
+        position: relative;
+    }
+
+
+    /* =========================================================
+       背景圖片
+    ========================================================= */
+
+    body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+
+        background-image:
+            linear-gradient(
+                rgba(30, 55, 38, 0.28),
+                rgba(30, 55, 38, 0.28)
+            ),
+            url("/images/europe4.jpg");
+
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+
+        z-index: -2;
+    }
+
+
+    /* =========================================================
+       背景柔化
+    ========================================================= */
+
+    body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+
+        background:
+            rgba(255, 255, 245, 0.10);
+
+        backdrop-filter: blur(1px);
+
+        z-index: -1;
+    }
+
+
+    /* =========================================================
+       主內容卡片
+    ========================================================= */
+
+    .container {
+        width: 92%;
+        max-width: 1000px;
+
+        margin: 0 auto;
+
+        padding: 38px 42px 45px;
+
+        background:
+            linear-gradient(
+                135deg,
+                rgba(250, 249, 239, 0.94),
+                rgba(239, 240, 224, 0.88)
+            );
+
+        border-radius: 28px;
+
+        box-shadow:
+            0 18px 45px rgba(20, 50, 30, 0.30),
+            inset 0 0 0 1px rgba(255, 255, 255, 0.55);
+
+        position: relative;
+        overflow: hidden;
+    }
+
+
+    /* =========================================================
+       卡片上方裝飾線
+    ========================================================= */
+
+    .container::before {
+        content: "";
+        position: absolute;
+
+        top: 0;
+        left: 0;
+
+        width: 100%;
+        height: 7px;
+
+        background:
+            linear-gradient(
+                90deg,
+                #176b4b,
+                #4d896c,
+                #c99a3b,
+                #4d896c,
+                #176b4b
+            );
+    }
+
+
+    /* =========================================================
+       標題
+    ========================================================= */
+
+    h1 {
+        margin: 0 0 10px;
+
+        text-align: center;
+
+        color: #31583f;
+
+        font-size: 34px;
+
+        letter-spacing: 5px;
+
+        font-weight: 700;
+
+        text-shadow:
+            1px 1px 0 rgba(255, 255, 255, 0.8);
+    }
+
+
+    /* =========================================================
+       副標題
+    ========================================================= */
+
+    .page-subtitle {
+        text-align: center;
+
+        margin-bottom: 30px;
+
+        color: #777d6d;
+
+        font-size: 15px;
+
+        letter-spacing: 2px;
+    }
+
+
+    /* =========================================================
+       成功訊息
+    ========================================================= */
+
+    .alert {
+        margin: 20px auto;
+
+        padding: 13px 20px;
+
+        max-width: 700px;
+
+        text-align: center;
+
+        border-radius: 12px;
+
+        letter-spacing: 1px;
+
+        font-size: 15px;
+    }
+
+
+    .alert-success {
+        background:
+            rgba(216, 239, 218, 0.88);
+
+        color: #285f38;
+
+        border:
+            1px solid rgba(72, 125, 82, 0.25);
+
+        box-shadow:
+            0 4px 12px rgba(50, 100, 60, 0.10);
+    }
+
+
+    /* =========================================================
+       詳情卡片
+    ========================================================= */
+
+    .detail-card {
+        width: 100%;
+
+        margin: 25px auto 0;
+
+        padding: 0;
+
+        background:
+            rgba(255, 255, 255, 0.58);
+
+        border-radius: 20px;
+
+        box-shadow:
+            0 8px 22px rgba(35, 60, 40, 0.12);
+
+        overflow: hidden;
+
+        border:
+            1px solid rgba(100, 110, 90, 0.15);
+    }
+
+
+    /* =========================================================
+       詳情卡片標題
+    ========================================================= */
+
+    .detail-header {
+        padding: 18px 25px;
+
+        background:
+            linear-gradient(
+                135deg,
+                #285d43,
+                #397354
+            );
+
+        color: white;
+
+        font-size: 17px;
+
+        font-weight: 600;
+
+        letter-spacing: 2px;
+
+        border-bottom:
+            3px solid #c8a14a;
+    }
+
+
+    /* =========================================================
+       詳情內容
+    ========================================================= */
+
+    .detail-body {
+        padding: 10px 25px 20px;
+    }
+
+
+    /* =========================================================
+       每一列資料
+    ========================================================= */
+
+    .detail-row {
+        display: flex;
+
+        align-items: center;
+
+        min-height: 58px;
+
+        border-bottom:
+            1px solid rgba(100, 110, 90, 0.16);
+
+        transition:
+            background 0.18s ease;
+    }
+
+
+    .detail-row:last-child {
+        border-bottom: none;
+    }
+
+
+    .detail-row:hover {
+        background:
+            rgba(255, 252, 225, 0.72);
+    }
+
+
+    /* =========================================================
+       左側標籤
+    ========================================================= */
+
+    .detail-label {
+        width: 260px;
+
+        flex-shrink: 0;
+
+        padding: 10px 15px 10px 5px;
+
+        color: #52604e;
+
+        font-size: 15px;
+
+        font-weight: 600;
+
+        letter-spacing: 1px;
+    }
+
+
+    /* =========================================================
+       右側資料
+    ========================================================= */
+
+    .detail-value {
+        flex: 1;
+
+        padding: 10px 15px;
+
+        color: #3f493f;
+
+        font-size: 15px;
+
+        font-weight: 500;
+
+        word-break: break-word;
+    }
+
+
+    /* =========================================================
+       ID / 重要資料
+    ========================================================= */
+
+    .detail-value.id-value {
+        color: #8b712e;
+
+        font-weight: 700;
+    }
+
+
+    /* =========================================================
+       金額
+    ========================================================= */
+
+    .detail-value.price-value {
+        color: #bd2929;
+
+        font-size: 17px;
+
+        font-weight: 700;
+    }
+
+
+    /* =========================================================
+       數量
+    ========================================================= */
+
+    .detail-value.quantity-value {
+        color: #397052;
+
+        font-weight: 700;
+    }
+
+
+    /* =========================================================
+       按鈕區
+    ========================================================= */
+
+    .bottom-actions {
+        display: flex;
+
+        justify-content: center;
+
+        align-items: center;
+
+        gap: 14px;
+
+        margin-top: 35px;
+
+        flex-wrap: wrap;
+    }
+
+
+    /* =========================================================
+       按鈕基本設定
+    ========================================================= */
+
+    .btn {
+        display: inline-block;
+
+        padding: 10px 22px;
+
+        margin: 3px;
+
+        border: none;
+
+        border-radius: 25px;
+
+        text-decoration: none;
+
+        font-family:
+            "Noto Serif TC",
+            "Microsoft JhengHei",
+            sans-serif;
+
+        font-size: 14px;
+
+        font-weight: 600;
+
+        letter-spacing: 1px;
+
+        cursor: pointer;
+
+        transition:
+            all 0.2s ease;
+
+        box-shadow:
+            0 3px 8px rgba(0, 0, 0, 0.12);
+    }
+
+
+    .btn:hover {
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 6px 14px rgba(0, 0, 0, 0.18);
+    }
+
+
+    .btn:active {
+        transform: translateY(0);
+
+        box-shadow:
+            0 2px 5px rgba(0, 0, 0, 0.12);
+    }
+
+
+    /* =========================================================
+       編輯按鈕
+    ========================================================= */
+
+    .btn-success {
+        background:
+            linear-gradient(
+                135deg,
+                #197451,
+                #39906b
+            );
+
+        color: white;
+    }
+
+
+    .btn-success:hover {
+        background:
+            linear-gradient(
+                135deg,
+                #126043,
+                #2e7959
+            );
+    }
+
+
+    /* =========================================================
+       返回按鈕
+    ========================================================= */
+
+    .btn-primary {
+        background:
+            linear-gradient(
+                135deg,
+                #5d7f72,
+                #78988b
+            );
+
+        color: white;
+    }
+
+
+    .btn-primary:hover {
+        background:
+            linear-gradient(
+                135deg,
+                #476b5d,
+                #668879
+            );
+    }
+
+
+    /* =========================================================
+       總費用區塊
+    ========================================================= */
+
+    .total-row {
+        margin-top: 8px;
+
+        padding-top: 12px;
+
+        border-top:
+            2px solid rgba(200, 161, 74, 0.45);
+    }
+
+
+    .total-row .detail-label {
+        color: #31583f;
+
+        font-size: 16px;
+    }
+
+
+    .total-row .detail-value {
+        color: #bd2929;
+
+        font-size: 22px;
+
+        font-weight: 700;
+    }
+
+
+    /* =========================================================
+       響應式設計
+    ========================================================= */
+
+    @media (max-width: 900px) {
+
+        body {
+            padding: 20px 10px;
+        }
+
+        .container {
+            width: 100%;
+
+            padding:
+                30px 18px 35px;
+
+            border-radius: 20px;
+        }
+
+        h1 {
+            font-size: 28px;
+
+            letter-spacing: 3px;
+        }
+
+        .detail-label {
+            width: 220px;
+        }
+    }
+
+
+    @media (max-width: 600px) {
+
+        body {
+            padding: 10px 5px;
+        }
+
+        .container {
+            padding:
+                28px 10px 30px;
+        }
+
+        h1 {
+            font-size: 24px;
+
+            letter-spacing: 2px;
+        }
+
+        .page-subtitle {
+            font-size: 13px;
+        }
+
+        .detail-header {
+            padding: 15px 18px;
+
+            font-size: 15px;
+        }
+
+        .detail-body {
+            padding:
+                5px 18px 15px;
+        }
+
+        .detail-row {
+            display: block;
+
+            padding: 10px 0;
+        }
+
+        .detail-label {
+            width: 100%;
+
+            padding:
+                5px 0;
+
+            font-size: 14px;
+
+            color: #52604e;
+        }
+
+        .detail-value {
+            padding:
+                5px 0;
+
+            font-size: 14px;
+        }
+
+        .bottom-actions {
+            flex-direction: column;
+
+            align-items: stretch;
+        }
+
+        .bottom-actions .btn {
+            text-align: center;
+        }
+    }
+
+</style>
+```
+
+</head>
+
+<body>
+
+<div class="container">
+
+```
+<!-- =====================================================
+     標題
+====================================================== -->
+
+<h1>訂單明細資料詳情</h1>
+
+<div class="page-subtitle">
+    ORDER ITEM DETAILS
+</div>
+
+
+<!-- =====================================================
+     成功訊息
+====================================================== -->
+
+<div
+    th:if="${successMessage}"
+    class="alert alert-success"
+    th:text="${successMessage}">
+
+    成功訊息
+
+</div>
+
+
+<!-- =====================================================
+     詳情卡片
+====================================================== -->
+
+<div class="detail-card">
+
+
+    <!-- 卡片標題 -->
+
+    <div class="detail-header">
+
+        訂單明細資訊
+
+    </div>
+
+
+    <!-- 詳情內容 -->
+
+    <div class="detail-body">
+
+
+        <!-- =================================================
+             order_item_id
+        ================================================== -->
+
+        <div class="detail-row">
+
+            <span class="detail-label">
+                order_item_id
+            </span>
+
+            <span
+                class="detail-value id-value"
+                th:text="${order_item.order_item_id}">
+
+                order_item_id
+
+            </span>
+
+        </div>
+
+
+        <!-- =================================================
+             user_id
+        ================================================== -->
+
+        <div class="detail-row">
+
+            <span class="detail-label">
+                user_id
+            </span>
+
+            <span
+                class="detail-value id-value"
+                th:text="${order_item.orders.users.id}">
+
+                user_id
+
+            </span>
+
+        </div>
+
+
+        <!-- =================================================
+             order_id
+        ================================================== -->
+
+        <div class="detail-row">
+
+            <span class="detail-label">
+                order_id
+            </span>
+
+            <span
+                class="detail-value id-value"
+                th:text="${order_item.orders.order_id}">
+
+                order_id
+
+            </span>
+
+        </div>
+
+
+        <!-- =================================================
+             product_id
+        ================================================== -->
+
+        <div class="detail-row">
+
+            <span class="detail-label">
+                product_id
+            </span>
+
+            <span
+                class="detail-value id-value"
+                th:text="${order_item.products.product_id}">
+
+                product_id
+
+            </span>
+
+        </div>
+
+
+        <!-- =================================================
+             雙人房人數
+        ================================================== -->
+
+        <div class="detail-row">
+
+            <span class="detail-label">
+                雙人房人數
+            </span>
+
+            <span
+                class="detail-value quantity-value"
+                th:text="${order_item.adult_double_qty}">
+
+                雙人房人數
+
+            </span>
+
+        </div>
+
+
+        <!-- =================================================
+             單人房人數
+        ================================================== -->
+
+        <div class="detail-row">
+
+            <span class="detail-label">
+                單人房人數
+            </span>
+
+            <span
+                class="detail-value quantity-value"
+                th:text="${order_item.adult_single_qty}">
+
+                單人房人數
+
+            </span>
+
+        </div>
+
+
+        <!-- =================================================
+             嬰兒人數
+        ================================================== -->
+
+        <div class="detail-row">
+
+            <span class="detail-label">
+                嬰兒人數
+            </span>
+
+            <span
+                class="detail-value quantity-value"
+                th:text="${order_item.infant_qty}">
+
+                嬰兒人數
+
+            </span>
+
+        </div>
+
+
+        <!-- =================================================
+             雙人房每位價格
+        ================================================== -->
+
+        <div class="detail-row">
+
+            <span class="detail-label">
+                雙人房每位價錢
+            </span>
+
+            <span
+                class="detail-value price-value"
+                th:text="${order_item.adult_double_unit_price}">
+
+                雙人房每位價錢
+
+            </span>
+
+        </div>
+
+
+        <!-- =================================================
+             單人房每位價格
+        ================================================== -->
+
+        <div class="detail-row">
+
+            <span class="detail-label">
+                單人房每位價錢
+            </span>
+
+            <span
+                class="detail-value price-value"
+                th:text="${order_item.adult_single_unit_price}">
+
+                單人房每位價錢
+
+            </span>
+
+        </div>
+
+
+        <!-- =================================================
+             嬰兒每位價格
+        ================================================== -->
+
+        <div class="detail-row">
+
+            <span class="detail-label">
+                嬰兒每位價錢
+            </span>
+
+            <span
+                class="detail-value price-value"
+                th:text="${order_item.infant_unit_price}">
+
+                嬰兒每位價錢
+
+            </span>
+
+        </div>
+
+
+        <!-- =================================================
+             總費用
+        ================================================== -->
+
+        <div class="detail-row total-row">
+
+            <span class="detail-label">
+                總費用
+            </span>
+
+            <span
+                class="detail-value"
+                th:text="${order_item.subtotal}">
+
+                總費用
+
+            </span>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     按鈕
+====================================================== -->
+
+<div class="bottom-actions">
+
+    <!-- 編輯 -->
+
+    <a
+        th:href="@{/web/order_item/{order_item_id}/edit(order_item_id=${order_item.order_item_id})}"
+        class="btn btn-success">
+
+        編輯
+
+    </a>
+
+
+    <!-- 返回訂單列表 -->
+
+    <a
+        th:href="@{/web/orders}"
+        class="btn btn-primary">
+
+        返回訂單列表
+
+    </a>
+
+</div>
+```
+
+</div>
+
+</body>
+
+</html>

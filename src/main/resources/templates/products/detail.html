@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>行程資料詳情</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 40px 20px;
+            min-height: 100vh;
+            font-family:
+                "Noto Serif TC",
+                "Microsoft JhengHei",
+                "PingFang TC",
+                serif;
+            color: #3f493f;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(
+                    rgba(30, 55, 38, 0.28),
+                    rgba(30, 55, 38, 0.28)
+                ),
+                url("/images/vietnam1.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: -2;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 245, 0.10);
+            backdrop-filter: blur(1px);
+            z-index: -1;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 38px 42px 45px;
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(250, 249, 239, 0.94),
+                    rgba(239, 240, 224, 0.88)
+                );
+            border-radius: 28px;
+            box-shadow:
+                0 18px 45px rgba(20, 50, 30, 0.30),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.55);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 7px;
+            background:
+                linear-gradient(
+                    90deg,
+                    #176b4b,
+                    #4d896c,
+                    #c99a3b,
+                    #4d896c,
+                    #176b4b
+                );
+        }
+
+        h1 {
+            margin: 0 0 10px;
+            text-align: center;
+            color: #31583f;
+            font-size: 34px;
+            letter-spacing: 5px;
+            font-weight: 700;
+        }
+
+        .page-subtitle {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #777d6d;
+            font-size: 15px;
+            letter-spacing: 2px;
+        }
+
+        .detail-card {
+            width: 100%;
+            margin: 25px auto 0;
+            background: rgba(255, 255, 255, 0.58);
+            border-radius: 20px;
+            box-shadow:
+                0 8px 22px rgba(35, 60, 40, 0.12);
+            overflow: hidden;
+            border: 1px solid rgba(100, 110, 90, 0.15);
+        }
+
+        .detail-header {
+            padding: 18px 25px;
+            background:
+                linear-gradient(
+                    135deg,
+                    #285d43,
+                    #397354
+                );
+            color: white;
+            font-size: 17px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            border-bottom: 3px solid #c8a14a;
+        }
+
+        .detail-body {
+            padding: 10px 25px 20px;
+        }
+
+        .detail-row {
+            display: flex;
+            align-items: center;
+            min-height: 58px;
+            border-bottom: 1px solid rgba(100, 110, 90, 0.16);
+            transition: background 0.18s ease;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-row:hover {
+            background: rgba(255, 252, 225, 0.72);
+        }
+
+        .detail-label {
+            width: 260px;
+            flex-shrink: 0;
+            padding: 10px 15px 10px 5px;
+            color: #52604e;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .detail-value {
+            flex: 1;
+            padding: 10px 15px;
+            color: #3f493f;
+            font-size: 15px;
+            font-weight: 500;
+            word-break: break-word;
+        }
+
+        .id-value {
+            color: #8b712e;
+            font-weight: 700;
+        }
+
+        .price-value {
+            color: #bd2929;
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .quantity-value {
+            color: #397052;
+            font-weight: 700;
+        }
+
+        .status-value {
+            color: #397052;
+            font-weight: 700;
+        }
+
+        .description-value {
+            white-space: pre-wrap;
+            line-height: 1.7;
+        }
+
+        .bottom-actions {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 14px;
+            margin-top: 35px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 22px;
+            margin: 3px;
+            border: none;
+            border-radius: 25px;
+            text-decoration: none;
+            font-family:
+                "Noto Serif TC",
+                "Microsoft JhengHei",
+                sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow:
+                0 3px 8px rgba(0, 0, 0, 0.12);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow:
+                0 6px 14px rgba(0, 0, 0, 0.18);
+        }
+
+        .btn-success {
+            background:
+                linear-gradient(
+                    135deg,
+                    #197451,
+                    #39906b
+                );
+            color: white;
+        }
+
+        .btn-primary {
+            background:
+                linear-gradient(
+                    135deg,
+                    #5d7f72,
+                    #78988b
+                );
+            color: white;
+        }
+
+        @media (max-width: 900px) {
+            body {
+                padding: 20px 10px;
+            }
+
+            .container {
+                width: 100%;
+                padding: 30px 18px 35px;
+                border-radius: 20px;
+            }
+
+            h1 {
+                font-size: 28px;
+                letter-spacing: 3px;
+            }
+
+            .detail-label {
+                width: 220px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px 5px;
+            }
+
+            .container {
+                padding: 28px 10px 30px;
+            }
+
+            h1 {
+                font-size: 24px;
+                letter-spacing: 2px;
+            }
+
+            .page-subtitle {
+                font-size: 13px;
+            }
+
+            .detail-header {
+                padding: 15px 18px;
+                font-size: 15px;
+            }
+
+            .detail-body {
+                padding: 5px 18px 15px;
+            }
+
+            .detail-row {
+                display: block;
+                padding: 10px 0;
+            }
+
+            .detail-label {
+                width: 100%;
+                padding: 5px 0;
+                font-size: 14px;
+            }
+
+            .detail-value {
+                padding: 5px 0;
+                font-size: 14px;
+            }
+
+            .bottom-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .bottom-actions .btn {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>行程資料詳情</h1>
+
+    <div class="page-subtitle">
+        PRODUCT DETAILS
+    </div>
+
+    <div class="detail-card">
+
+        <div class="detail-header">
+            行程資訊
+        </div>
+
+        <div class="detail-body">
+
+            <div class="detail-row">
+                <span class="detail-label">行程 ID</span>
+                <span class="detail-value id-value"
+                      th:text="${product.product_id}">
+                    ID
+                </span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">行程名稱</span>
+                <span class="detail-value"
+                      th:text="${product.name}">
+                    行程名稱
+                </span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">雙人床票價</span>
+                <span class="detail-value price-value"
+                      th:text="${product.adult_double_price}">
+                    雙人床票價
+                </span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">單人床票價</span>
+                <span class="detail-value price-value"
+                      th:text="${product.adult_single_price}">
+                    單人床票價
+                </span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">嬰兒票價</span>
+                <span class="detail-value price-value"
+                      th:text="${product.infant_price}">
+                    嬰兒票價
+                </span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">出發機場</span>
+                <span class="detail-value"
+                      th:text="${product.departure_airport}">
+                    機場
+                </span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">目的地</span>
+                <span class="detail-value"
+                      th:text="${product.destination}">
+                    目的地
+                </span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">可售票數</span>
+                <span class="detail-value quantity-value"
+                      th:text="${product.max_capacity}">
+                    可售票數
+                </span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">剩餘機位</span>
+                <span class="detail-value quantity-value"
+                      th:text="${product.available_capacity}">
+                    剩餘機位
+                </span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">行程描述</span>
+                <span class="detail-value description-value"
+                      th:text="${product.description}">
+                    行程描述
+                </span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">註記</span>
+                <span class="detail-value description-value"
+                      th:text="${product.notification}">
+                    註記
+                </span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">行程狀態</span>
+                <span class="detail-value status-value"
+                      th:text="${product.product_status}">
+                    狀態
+                </span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">起飛日</span>
+                <span class="detail-value"
+                      th:text="${product.fly_day}">
+                    起飛日
+                </span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">返回日</span>
+                <span class="detail-value"
+                      th:text="${product.back_day}">
+                    返回日
+                </span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">創建時間</span>
+                <span class="detail-value"
+                      th:text="${product.created_at}">
+                    創建時間
+                </span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">更新時間</span>
+                <span class="detail-value"
+                      th:text="${product.updated_at}">
+                    更新時間
+                </span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">版本</span>
+                <span class="detail-value id-value"
+                      th:text="${product.product_version}">
+                    版本
+                </span>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="bottom-actions">
+
+        <a
+            th:href="@{/web/products/{product_id}/edit(product_id=${product.product_id})}"
+            class="btn btn-success">
+            編輯
+        </a>
+
+        <a
+            th:href="@{/web/products}"
+            class="btn btn-primary">
+            返回列表
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title th:text="${isEdit} ? '編輯會員' : '建立會員'">會員資料</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Noto Sans TC", sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                linear-gradient(rgba(25, 55, 42, 0.48), rgba(25, 55, 42, 0.48)),
+                url('/images/china.png') center center / cover fixed no-repeat;
+
+            color: #34443a;
+            padding: 50px 20px;
+        }
+
+        /* =========================
+           外層
+        ========================= */
+
+        .container {
+            width: 92%;
+            max-width: 850px;
+            margin: 0 auto;
+        }
+
+        /* =========================
+           標題
+        ========================= */
+
+        .page-title {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .page-title h1 {
+            font-size: 42px;
+            letter-spacing: 5px;
+            font-weight: 700;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.35);
+        }
+
+        .page-title p {
+            margin-top: 8px;
+            font-size: 16px;
+            letter-spacing: 2px;
+            opacity: 0.9;
+        }
+
+        /* =========================
+           主面板
+        ========================= */
+
+        .content-panel {
+            background: rgba(248, 247, 238, 0.94);
+            border-radius: 28px;
+            padding: 42px 50px;
+            box-shadow:
+                0 15px 40px rgba(0,0,0,0.25),
+                inset 0 0 30px rgba(255,255,255,0.4);
+        }
+
+        /* =========================
+           表單標題
+        ========================= */
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .section-title h2 {
+            color: #315b48;
+            font-size: 28px;
+            letter-spacing: 3px;
+        }
+
+        .section-title .line {
+            width: 55px;
+            height: 4px;
+            background: #d9a441;
+            margin: 12px auto 0;
+            border-radius: 5px;
+        }
+
+        /* =========================
+           表單
+        ========================= */
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #526358;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid #d5d9cc;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.82);
+            color: #34443a;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.25s ease;
+        }
+
+        input:focus {
+            border-color: #4d8a6c;
+            box-shadow: 0 0 0 3px rgba(77,138,108,0.15);
+            background: white;
+        }
+
+        /* =========================
+           按鈕
+        ========================= */
+
+        .button-area {
+            display: flex;
+            gap: 15px;
+            margin-top: 32px;
+        }
+
+        .btn {
+            flex: 1;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+
+            padding: 13px 20px;
+
+            border-radius: 30px;
+            text-decoration: none;
+
+            font-size: 16px;
+            font-weight: 600;
+
+            cursor: pointer;
+            border: none;
+
+            transition: all 0.25s ease;
+        }
+
+        .btn-primary {
+            background: #2f7959;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #246247;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(47,121,89,0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid #68816f;
+            color: #4c6555;
+        }
+
+        .btn-secondary:hover {
+            background: #68816f;
+            color: white;
+        }
+
+        /* =========================
+           RWD
+        ========================= */
+
+        @media (max-width: 600px) {
+
+            body {
+                padding: 25px 12px;
+            }
+
+            .content-panel {
+                padding: 30px 22px;
+                border-radius: 20px;
+            }
+
+            .page-title h1 {
+                font-size: 30px;
+            }
+
+            .button-area {
+                flex-direction: column;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <!-- 頁面標題 -->
+
+    <div class="page-title">
+
+        <h1 th:text="${isEdit} ? '編輯會員' : '建立會員'">
+            會員資料
+        </h1>
+		
+        <p>Member Information</p>
+
+    </div>
+	
+
+    <!-- 主內容 -->
+
+    <div class="content-panel">
+
+        <div class="section-title">
+
+            <h2 th:text="${isEdit} ? '會員資料修改' : '建立新會員'">
+                會員資料
+            </h2>
+			<!-- 錯誤訊息提示區 -->
+            <div th:if="${errorMessage}"
+                 class="alert alert-danger"
+                 th:text="${errorMessage}">
+            </div>
+            <div class="line"></div>
+
+        </div>
+
+
+        <form
+            th:action="${isEdit} ? @{/web/member/editinfo} : @{/web/memberlogin/create}"
+            method="post"
+            th:object="${user}">
+            <!-- 姓名 -->
+            <div class="form-group">
+                <label for="name">
+                    姓名
+                </label>
+                <input
+                    type="text"
+                    id="name"
+                    th:field="*{name}"
+                    placeholder="請輸入姓名"
+                    required>
+            </div>
+
+
+            <!-- Email -->
+
+            <div th:unless="${isUpdate}"
+            class="form-group">
+
+                <label for="email">
+                    電子信箱
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    th:field="*{email}"
+                    placeholder="example@mail.com"
+                    required>
+
+            </div>
+
+
+            <!-- 電話 -->
+
+            <div class="form-group">
+
+                <label for="phone">
+                    電話
+                </label>
+
+                <input
+                    type="text"
+                    id="phone"
+                    th:field="*{phone}"
+                    placeholder="請輸入電話號碼"
+                    required>
+
+            </div>
+
+
+            <!-- 密碼 -->
+
+            <div class="form-group">
+
+                <label for="password_hash">
+                    密碼
+                </label>
+
+                <input
+                    type="password"
+                    id="password_hash"
+                    th:field="*{password_hash}"
+                    placeholder="請輸入密碼"
+                    required>
+
+            </div>
+
+
+            <!-- 按鈕 -->
+
+            <div class="button-area">
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                    th:text="${isEdit} ? '更新會員資料' : '建立會員'">
+                    建立
+                </button>
+
+                <a
+                    th:href="@{/web/member}"
+                    class="btn btn-secondary">
+
+                    取消
+
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,466 @@
+
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>立即購買</title>
+
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, "Microsoft JhengHei", sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 850px;
+            margin: 50px auto;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            margin: 0 0 10px 0;
+            font-size: 32px;
+            color: #333;
+        }
+
+        .page-header p {
+            margin: 0;
+            color: #777;
+            font-size: 15px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 14px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .card-title {
+            margin: 0 0 22px 0;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            font-size: 21px;
+            color: #333;
+        }
+
+        .product-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 22px;
+            color: #222;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .info-item {
+            background-color: #f8f9fb;
+            padding: 15px;
+            border-radius: 9px;
+        }
+
+        .info-label {
+            display: block;
+            font-size: 14px;
+            color: #777;
+            margin-bottom: 6px;
+        }
+
+        .info-value {
+            display: block;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .capacity-box {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 9px;
+            background-color: #f8f9fb;
+            text-align: center;
+        }
+
+        .capacity-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .capacity-text {
+            color: #777;
+            margin-left: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 9px;
+            color: #444;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: #888;
+        }
+
+        .form-note {
+            margin-bottom: 25px;
+            padding: 12px 15px;
+            background-color: #f8f9fb;
+            border-radius: 8px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .button-area {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            border-radius: 8px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            transition: 0.2s;
+        }
+
+        .btn-primary {
+            background-color: #333;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #555;
+        }
+
+        .btn-secondary {
+            background-color: #e9ecef;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background-color: #dfe3e7;
+        }
+
+        @media (max-width: 600px) {
+
+            .container {
+                width: 94%;
+                margin: 30px auto;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .button-area {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- 頁面標題 -->
+
+    <div class="page-header">
+
+        <h1>立即購買</h1>
+
+        <p>請確認行程資訊並填寫旅客數量</p>
+
+    </div>
+
+
+    <!-- 行程資訊 -->
+
+    <div class="card">
+
+        <h2 class="card-title">行程資訊</h2>
+
+        <div class="product-name"
+             th:text="${product.name}">
+            商品名稱
+        </div>
+
+        <div class="info-grid">
+
+            <div class="info-item">
+
+                <span class="info-label">出發地</span>
+
+                <span class="info-value"
+                      th:text="${product.departure_airport}">
+                    出發地
+                </span>
+
+            </div>
+
+            <div class="info-item">
+
+                <span class="info-label">目的地</span>
+
+                <span class="info-value"
+                      th:text="${product.destination}">
+                    目的地
+                </span>
+
+            </div>
+
+            <div class="info-item">
+
+                <span class="info-label">出發日期</span>
+
+                <span class="info-value"
+                      th:text="${product.fly_day}">
+                    出發日期
+                </span>
+
+            </div>
+
+            <div class="info-item">
+
+                <span class="info-label">返回日期</span>
+
+                <span class="info-value"
+                      th:text="${product.back_day}">
+                    返回日期
+                </span>
+
+            </div>
+
+        </div>
+
+        <div class="capacity-box">
+
+            <span class="capacity-number"
+                  th:text="${product.available_capacity}">
+                0
+            </span>
+
+            <span class="capacity-text">
+                個剩餘名額
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- 旅客數量 -->
+
+    <div class="card">
+
+        <h2 class="card-title">旅客數量</h2>
+
+        <div class="form-note">
+            請輸入本次購買的旅客數量，總人數不可超過目前剩餘名額。
+        </div>
+
+        <form id="purchaseForm"
+
+              th:action="@{/web/frontproducts/buy/{product_id}(product_id=${product.product_id})}"
+
+              method="post"
+
+              th:onsubmit="return validateCapacity([[${product.available_capacity}]])">
+
+
+            <div class="form-group">
+
+                <label for="adult_double_qty">
+                    成人雙人房
+                </label>
+
+                <input type="number"
+
+                       id="adult_double_qty"
+
+                       name="adult_double_qty"
+
+                       value="0"
+
+                       min="0"
+
+                       th:max="${product.available_capacity}"
+
+                       required>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="adult_single_qty">
+                    成人單人房
+                </label>
+
+                <input type="number"
+
+                       id="adult_single_qty"
+
+                       name="adult_single_qty"
+
+                       value="0"
+
+                       min="0"
+
+                       th:max="${product.available_capacity}"
+
+                       required>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="infant_qty">
+                    嬰兒
+                </label>
+
+                <input type="number"
+
+                       id="infant_qty"
+
+                       name="infant_qty"
+
+                       value="0"
+
+                       min="0"
+
+                       th:max="${product.available_capacity}"
+
+                       required>
+
+            </div>
+
+
+            <div class="button-area">
+
+                <a class="btn btn-secondary"
+                   th:href="@{/web/frontproducts}">
+                    返回商品列表
+                </a>
+
+                <button type="submit"
+                        class="btn btn-primary">
+                    確認購買
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script th:inline="javascript">
+
+function validateCapacity(maxCapacity) {
+
+    const doubleQty =
+        parseInt(document.getElementById('adult_double_qty').value) || 0;
+
+    const singleQty =
+        parseInt(document.getElementById('adult_single_qty').value) || 0;
+
+    const infantQty =
+        parseInt(document.getElementById('infant_qty').value) || 0;
+
+
+    const totalQty =
+        doubleQty + singleQty + infantQty;
+
+
+    if (totalQty > maxCapacity) {
+
+        alert(
+            "選擇的旅客總數量 (" +
+            totalQty +
+            ") 超過剩餘可容納人數 (" +
+            maxCapacity +
+            ")！"
+        );
+
+        return false;
+    }
+
+
+    if (totalQty === 0) {
+
+        alert("請至少選擇一位旅客！");
+
+        return false;
+    }
+
+
+    return true;
+
+}
+
+</script>
+
+</body>
+
+</html>
+```

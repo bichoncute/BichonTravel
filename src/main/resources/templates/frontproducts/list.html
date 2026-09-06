@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>比熊旅行社</title>
+    <link rel="icon" th:href="@{/images/logo.png}" type="image/png">
+    <style>
+        /* 1. 為了讓偽元素定位，body 必須設定相對定位，並確保高度填滿 */
+        body {
+            position: relative;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+        /* 2. 使用偽元素來放背景圖，讓它完美置中、填滿螢幕 */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/images/white.jpg');
+            background-size: 40% auto;
+            background-position: center ;
+            background-repeat: no-repeat;
+            opacity: 0.55;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* 頂部功能列樣式 */
+        .search-bar {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .btn {
+            padding: 8px 15px;
+            text-decoration: none;
+            border-radius: 4px;
+            display: inline-block;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary { background: #007bff; color: white; }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-success { background: #28a745; color: white; }
+        
+        .nav-buttons {
+            float: right;
+        }
+        .nav-buttons .btn {
+            margin-left: 10px;
+        }
+
+        .alert {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .alert-success { background: #d4edda; color: #155724; }
+        .logo-img { max-height: 80px; width: auto; display: block; margin-bottom: 20px; }
+
+        /* ================= 🎯 新增：行程卡片框架樣式 ================= */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .product-card {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* 卡片頭部：放置行程名稱與核心按鈕 */
+        .card-header {
+            background-color: rgb(192, 192, 192);
+            color: white;
+            padding: 15px;
+        }
+        .card-title {
+            margin: 0 0 10px 0;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .card-header-btns {
+            display: flex;
+            gap: 10px;
+        }
+        .card-header-btns .btn {
+            flex: 1;
+            text-align: center;
+            padding: 6px 10px;
+            font-size: 13px;
+        }
+
+        /* 卡片內容：放置後端傳來的各項票價與日期資訊 */
+        .card-body {
+            padding: 15px;
+            flex-grow: 1;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px dashed #eee;
+        }
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .info-value {
+            font-weight: bold;
+            color: #111;
+        }
+        /* 特殊突顯狀態與票價 */
+        .price-value { color: #e67e22; }
+        .status-active { color: #2ecc71; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>
+            <img th:src="@{/images/logo.png}" alt="比熊旅行社" class="logo-img">
+        </h1>
+
+        <!-- 成功訊息 -->
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}">成功訊息</div>
+
+        <!-- 頂部搜尋與導覽列 -->
+        <div class="search-bar">
+            <div class="nav-buttons">
+                <a th:href="@{/web/member}" class="btn btn-success">會員專區</a>
+                <a th:href="@{/web/dashboard}" class="btn btn-success">管理者後台</a>
+            </div>
+            <form th:action="@{/web/frontproducts/search}" method="get" style="display: inline-block;">
+                <label>出發日期:</label>
+                <input type="date" name="startDate" required>
+                <label>至:</label>
+                <input type="date" name="endDate" required>
+                <button type="submit" class="btn btn-primary" style="padding: 4px 10px;">搜尋</button>
+            </form>
+        </div>
+
+        <p>共 <span th:text="${productsCount}">0</span> 項商品</p>
+
+        <!-- 🎯 行程卡片區塊 (取代原本的 table) -->
+        <div class="product-grid">
+            <!-- 運用 th:each 迴圈產生每一個行程框框 -->
+            <div class="product-card" th:each="product : ${products}">
+                
+                <!-- 卡片上方：行程名稱與常用操作 -->
+                <div class="card-header">
+                    <h3 class="card-title" th:text="${product.name}">行程名稱</h3>
+                    <div class="card-header-btns">
+                        <!-- 詳情按鈕 -->
+                        <a th:href="@{/web/frontproducts/{product_id}(product_id=${product.product_id})}" class="btn btn-primary">詳情</a>
+                        <!-- 立刻購買按鈕 -->
+                        <a th:href="@{/web/frontproducts/buy/{product_id}(product_id=${product.product_id})}" class="btn btn-danger">立刻購買</a>
+                        <!-- 加入購物車按鈕 -->
+                        <a th:href="@{/web/frontproducts/cart/create/{product_id}(product_id=${product.product_id})}" class="btn btn-primary">加入購物車</a>
+                    </div>
+                </div>
+
+                <!-- 卡片下方：純動態數據展示區 -->
+                <div class="card-body">
+                    <div class="info-row">
+                        <span class="info-label">雙人床票價</span>
+                        <span class="info-value price-value" th:text="'$' + ${product.adult_double_price}">0</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">單人床票價</span>
+                        <span class="info-value price-value" th:text="'$' + ${product.adult_single_price}">0</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">嬰兒票價</span>
+                        <span class="info-value price-value" th:text="'$' + ${product.infant_price}">0</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">最多席位</span>
+                        <span class="info-value" th:text="${product.max_capacity} + ' 位'">0</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">剩餘機位</span>
+                        <span class="info-value" th:text="${product.available_capacity} + ' 位'">0</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">狀態</span>
+                        <span class="info-value status-active" th:text="${product.product_status}">狀態</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">起飛日</span>
+                        <span class="info-value" th:text="${product.fly_day}">2026-01-01</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">返回日</span>
+                        <span class="info-value" th:text="${product.back_day}">2026-01-05</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

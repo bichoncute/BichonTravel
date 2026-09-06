@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>商品列表</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+            font-family: "Microsoft JhengHei", "Noto Sans TC", Arial, sans-serif;
+            color: #3f463d;
+        }
+
+        body {
+            min-height: 100vh;
+            background-image:
+                linear-gradient(
+                    rgba(24, 48, 35, 0.35),
+                    rgba(24, 48, 35, 0.35)
+                ),
+                url('/images/greece.jpg');
+
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+        }
+
+        /* =========================
+           主容器
+           ========================= */
+
+        .container {
+            width: 94%;
+            max-width: 1500px;
+            margin: 40px auto;
+            padding: 35px 40px 45px;
+
+            background: rgba(248, 247, 238, 0.90);
+
+            border: 1px solid rgba(255, 255, 255, 0.75);
+            border-radius: 30px;
+
+            box-shadow:
+                0 15px 45px rgba(0, 0, 0, 0.25),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+
+            backdrop-filter: blur(5px);
+        }
+
+        /* =========================
+           標題
+           ========================= */
+
+        h1 {
+            margin: 0 0 25px;
+
+            text-align: center;
+
+            color: #28533d;
+
+            font-size: 34px;
+            letter-spacing: 5px;
+
+            font-weight: bold;
+        }
+
+        h1::before {
+            content: "🌿";
+            margin-right: 12px;
+        }
+
+        /* =========================
+           成功訊息
+           ========================= */
+
+        .alert {
+            padding: 14px 20px;
+            margin: 15px 0 22px;
+
+            border-radius: 14px;
+
+            text-align: center;
+
+            font-weight: bold;
+        }
+
+        .alert-success {
+            background: rgba(218, 239, 221, 0.90);
+            color: #28613d;
+            border: 1px solid #a8c9af;
+        }
+
+        /* =========================
+           統計資訊
+           ========================= */
+
+        .summary {
+            margin-bottom: 18px;
+
+            color: #65685d;
+
+            font-size: 17px;
+        }
+
+        .summary span {
+            color: #c79532;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        /* =========================
+           按鈕
+           ========================= */
+
+        .btn {
+            display: inline-block;
+
+            padding: 9px 17px;
+
+            margin: 3px;
+
+            border: none;
+            border-radius: 20px;
+
+            text-decoration: none;
+
+            cursor: pointer;
+
+            font-family: inherit;
+            font-size: 14px;
+
+            transition: all 0.25s ease;
+
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.20);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4d8b70, #2e6650);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #d8aa45, #bd8423);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #c96b67, #a84743);
+            color: white;
+        }
+
+        .btn-create {
+            display: inline-block;
+
+            margin-bottom: 25px;
+
+            padding: 12px 24px;
+
+            border-radius: 24px;
+
+            background: linear-gradient(135deg, #dcb65b, #c58c29);
+
+            color: white;
+
+            text-decoration: none;
+
+            font-weight: bold;
+
+            box-shadow: 0 5px 12px rgba(155, 112, 35, 0.30);
+
+            transition: 0.25s;
+        }
+
+        .btn-create:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(155, 112, 35, 0.40);
+        }
+
+        /* =========================
+           表格外框
+           ========================= */
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+
+            border-radius: 20px;
+
+            box-shadow: 0 5px 18px rgba(0,0,0,0.10);
+        }
+
+        table {
+            border-collapse: separate;
+            border-spacing: 0;
+
+            width: 100%;
+
+            min-width: 1300px;
+
+            background: rgba(255,255,255,0.72);
+        }
+
+        th {
+            padding: 15px 12px;
+
+            background: linear-gradient(
+                135deg,
+                #376b52,
+                #28533d
+            );
+
+            color: white;
+
+            text-align: center;
+
+            font-weight: bold;
+
+            white-space: nowrap;
+
+            border-bottom: 2px solid rgba(255,255,255,0.3);
+        }
+
+        th:first-child {
+            border-top-left-radius: 18px;
+        }
+
+        th:last-child {
+            border-top-right-radius: 18px;
+        }
+
+        td {
+            padding: 13px 12px;
+
+            text-align: center;
+
+            border-bottom: 1px solid rgba(120,120,120,0.15);
+
+            white-space: nowrap;
+        }
+
+        tbody tr {
+            transition: 0.2s;
+        }
+
+        tbody tr:hover {
+            background: rgba(226, 237, 224, 0.80);
+        }
+
+        /* 狀態 */
+
+        .status {
+            padding: 6px 12px;
+
+            border-radius: 15px;
+
+            background: rgba(65, 116, 84, 0.15);
+
+            color: #376b52;
+
+            font-weight: bold;
+        }
+
+        /* =========================
+           操作欄
+           ========================= */
+
+        .action-cell {
+            white-space: normal;
+            min-width: 180px;
+        }
+
+        .action-cell form {
+            display: inline-block;
+        }
+
+        /* =========================
+           底部
+           ========================= */
+
+        .bottom-nav {
+            margin-top: 30px;
+
+            text-align: center;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>商品列表</h1>
+
+    <!-- 成功訊息 -->
+
+    <div th:if="${successMessage}"
+         class="alert alert-success"
+         th:text="${successMessage}">
+        成功訊息
+    </div>
+
+    <!-- 統計資訊 -->
+
+    <div class="summary">
+        共
+        <span th:text="${productsCount}">0</span>
+        項商品
+    </div>
+
+    <!-- 建立按鈕 -->
+
+    <a th:href="@{/web/products/create}"
+       class="btn-create">
+
+        ＋ 建立新商品
+
+    </a>
+
+    <!-- 商品表格 -->
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+
+            <tr>
+
+                <th>ID</th>
+
+                <th>商品名稱</th>
+
+                <th>雙人床票價</th>
+
+                <th>單人床票價</th>
+
+                <th>嬰兒票價</th>
+
+                <th>機場</th>
+
+                <th>目的地</th>
+
+                <th>最大人數</th>
+
+                <th>剩餘機位</th>
+
+                <th>狀態</th>
+
+                <th>起飛日</th>
+
+                <th>返回日</th>
+
+                <th>創建時間</th>
+
+                <th>更新時間</th>
+
+                <th>版本</th>
+
+                <th>操作</th>
+
+            </tr>
+
+            </thead>
+
+            <tbody>
+
+            <tr th:each="product : ${products}">
+
+                <td th:text="${product.product_id}">
+                    ID
+                </td>
+
+                <td th:text="${product.name}">
+                    商品名稱
+                </td>
+
+                <td th:text="${product.adult_double_price}">
+                    雙人床票價
+                </td>
+
+                <td th:text="${product.adult_single_price}">
+                    單人床票價
+                </td>
+
+                <td th:text="${product.infant_price}">
+                    嬰兒票價
+                </td>
+
+                <td th:text="${product.departure_airport}">
+                    機場
+                </td>
+
+                <td th:text="${product.destination}">
+                    目的地
+                </td>
+
+                <td th:text="${product.max_capacity}">
+                    最大人數
+                </td>
+
+                <td th:text="${product.available_capacity}">
+                    剩餘機位
+                </td>
+
+                <td>
+                    <span class="status"
+                          th:text="${product.product_status}">
+                        狀態
+                    </span>
+                </td>
+
+                <td th:text="${product.fly_day}">
+                    起飛日
+                </td>
+
+                <td th:text="${product.back_day}">
+                    返回日
+                </td>
+
+                <td th:text="${product.created_at}">
+                    創建時間
+                </td>
+
+                <td th:text="${product.updated_at}">
+                    更新時間
+                </td>
+
+                <td th:text="${product.product_version}">
+                    版本
+                </td>
+
+                <td class="action-cell">
+
+                    <a th:href="@{/web/products/{product_id}(product_id=${product.product_id})}"
+                       class="btn btn-primary">
+                        詳情
+                    </a>
+
+                    <a th:href="@{/web/products/{product_id}/edit(product_id=${product.product_id})}"
+                       class="btn btn-success">
+                        編輯
+                    </a>
+
+                    <form th:action="@{/web/products/{product_id}/delete(product_id=${product.product_id})}"
+                          method="post">
+
+                        <button type="submit"
+                                class="btn btn-danger"
+                                onclick="return confirm('確定要刪除嗎？')">
+
+                            刪除
+
+                        </button>
+
+                    </form>
+
+                </td>
+
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <div class="bottom-nav">
+
+        <a th:href="@{/web/dashboard}"
+           class="btn btn-primary">
+
+            ← 返回管理者後台
+
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

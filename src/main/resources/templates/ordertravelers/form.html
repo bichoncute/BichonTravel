@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title th:text="${isEdit} ? '編輯旅客資料' : '建立旅客資料'">
+        旅客資料表單
+    </title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 40px 20px;
+            min-height: 100vh;
+
+            font-family:
+                "Noto Serif TC",
+                "Microsoft JhengHei",
+                "PingFang TC",
+                serif;
+
+            color: #3f493f;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+
+            background-image:
+                linear-gradient(
+                    rgba(30, 55, 38, 0.28),
+                    rgba(30, 55, 38, 0.28)
+                ),
+                url("/images/france4.jpg");
+
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+
+            z-index: -2;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+
+            background: rgba(255, 255, 245, 0.10);
+            backdrop-filter: blur(1px);
+
+            z-index: -1;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 900px;
+
+            margin: 0 auto;
+            padding: 38px 42px 45px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(250, 249, 239, 0.94),
+                    rgba(239, 240, 224, 0.88)
+                );
+
+            border-radius: 28px;
+
+            box-shadow:
+                0 18px 45px rgba(20, 50, 30, 0.30),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.55);
+
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 7px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #176b4b,
+                    #4d896c,
+                    #c99a3b,
+                    #4d896c,
+                    #176b4b
+                );
+        }
+
+        h1 {
+            margin: 0 0 10px;
+
+            text-align: center;
+
+            color: #31583f;
+
+            font-size: 34px;
+            letter-spacing: 5px;
+            font-weight: 700;
+        }
+
+        .page-subtitle {
+            text-align: center;
+
+            margin-bottom: 30px;
+
+            color: #777d6d;
+
+            font-size: 15px;
+            letter-spacing: 2px;
+        }
+
+        .form-card {
+            margin-top: 25px;
+
+            background:
+                rgba(255, 255, 255, 0.58);
+
+            border-radius: 20px;
+
+            box-shadow:
+                0 8px 22px rgba(35, 60, 40, 0.12);
+
+            overflow: hidden;
+
+            border:
+                1px solid rgba(100, 110, 90, 0.15);
+        }
+
+        .form-header {
+            padding: 18px 25px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #285d43,
+                    #397354
+                );
+
+            color: white;
+
+            font-size: 17px;
+            font-weight: 600;
+            letter-spacing: 2px;
+
+            border-bottom:
+                3px solid #c8a14a;
+        }
+
+        .form-body {
+            padding: 28px 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+
+            margin-bottom: 8px;
+
+            color: #52604e;
+
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        input,
+        select {
+            width: 100%;
+
+            padding: 12px 15px;
+
+            border:
+                1px solid rgba(100, 110, 90, 0.25);
+
+            border-radius: 10px;
+
+            background:
+                rgba(255, 255, 255, 0.78);
+
+            color: #3f493f;
+
+            font-family:
+                "Noto Serif TC",
+                "Microsoft JhengHei",
+                sans-serif;
+
+            font-size: 15px;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+
+            border-color: #397052;
+
+            box-shadow:
+                0 0 0 3px rgba(57, 112, 82, 0.12);
+        }
+
+        .order-info {
+            padding: 12px 15px;
+
+            margin-bottom: 22px;
+
+            background:
+                rgba(255, 247, 218, 0.65);
+
+            border:
+                1px solid rgba(200, 161, 74, 0.25);
+
+            border-radius: 10px;
+
+            color: #715d2a;
+
+            font-size: 14px;
+        }
+
+        .bottom-actions {
+            display: flex;
+
+            justify-content: center;
+            align-items: center;
+
+            gap: 14px;
+
+            margin-top: 30px;
+
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+
+            padding: 11px 25px;
+
+            margin: 3px;
+
+            border: none;
+            border-radius: 25px;
+
+            text-decoration: none;
+
+            font-family:
+                "Noto Serif TC",
+                "Microsoft JhengHei",
+                sans-serif;
+
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1px;
+
+            cursor: pointer;
+
+            transition: all 0.2s ease;
+
+            box-shadow:
+                0 3px 8px rgba(0, 0, 0, 0.12);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 6px 14px rgba(0, 0, 0, 0.18);
+        }
+
+        .btn-success {
+            background:
+                linear-gradient(
+                    135deg,
+                    #197451,
+                    #39906b
+                );
+
+            color: white;
+        }
+
+        .btn-primary {
+            background:
+                linear-gradient(
+                    135deg,
+                    #5d7f72,
+                    #78988b
+                );
+
+            color: white;
+        }
+
+        @media (max-width: 600px) {
+
+            body {
+                padding: 10px 5px;
+            }
+
+            .container {
+                width: 100%;
+                padding: 28px 15px 30px;
+                border-radius: 20px;
+            }
+
+            h1 {
+                font-size: 25px;
+                letter-spacing: 3px;
+            }
+
+            .form-body {
+                padding: 22px 18px;
+            }
+
+            .bottom-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .bottom-actions .btn {
+                text-align: center;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1 th:text="${isEdit} ? '編輯旅客資料' : '建立新旅客資料'">
+        旅客資料表單
+    </h1>
+
+    <div class="page-subtitle">
+        TRAVELER INFORMATION
+    </div>
+
+    <div class="form-card">
+
+        <div class="form-header">
+            旅客資料
+        </div>
+
+        <div class="form-body">
+
+            <form
+                th:object="${order_travelers}"
+                method="post">
+
+                <input
+                    type="hidden"
+                    th:field="*{orders.order_id}">
+
+                <div class="order-info">
+                    所屬訂單 ID：
+                    <strong
+                        th:text="${order_travelers.orders.order_id}">
+                        order_id
+                    </strong>
+                </div>
+
+                <div class="form-group">
+
+                    <label for="travelers_real_name">
+                        乘客姓名
+                    </label>
+
+                    <input
+                        type="text"
+                        id="travelers_real_name"
+                        th:field="*{travelers_real_name}"
+                        placeholder="請輸入乘客姓名"
+                        required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="passport_num">
+                        護照號碼
+                    </label>
+
+                    <input
+                        type="text"
+                        id="passport_num"
+                        th:field="*{passport_num}"
+                        placeholder="請輸入護照號碼"
+                        required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="phone_num">
+                        手機號碼
+                    </label>
+
+                    <input
+                        type="text"
+                        id="phone_num"
+                        th:field="*{phone_num}"
+                        placeholder="請輸入手機號碼"
+                        required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="line_account">
+                        Line 帳號
+                    </label>
+
+                    <input
+                        type="text"
+                        id="line_account"
+                        th:field="*{line_account}"
+                        placeholder="請輸入 Line 帳號"
+                        required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="special_request">
+                        特殊需求
+                    </label>
+
+                    <input
+                        type="text"
+                        id="special_request"
+                        th:field="*{special_request}"
+                        placeholder="若無特殊需求可填寫「無」"
+                        required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="traveler_type">
+                        乘客類型
+                    </label>
+
+                    <select
+                        id="traveler_type"
+                        th:field="*{traveler_type}"
+                        required>
+
+                        <option value="" disabled>
+                            請選擇乘客類型
+                        </option>
+
+                        <option value="成人">
+                            成人
+                        </option>
+
+                        <option value="嬰兒">
+                            嬰兒
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="room_type">
+                        房間類型
+                    </label>
+
+                    <select
+                        id="room_type"
+                        th:field="*{room_type}"
+                        required>
+
+                        <option value="" disabled>
+                            請選擇單／雙人床
+                        </option>
+
+                        <option value="單人">
+                            單人
+                        </option>
+
+                        <option value="雙人">
+                            雙人
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="bottom-actions">
+
+                    <button
+                        th:if="${isEdit}"
+                        type="submit"
+                        class="btn btn-success"
+                        th:formaction="@{/web/order_travelers/{travelers_id}/edit(travelers_id=${order_travelers.travelers_id})}">
+                        更新
+                    </button>
+
+                    <button
+                        th:unless="${isEdit}"
+                        type="submit"
+                        class="btn btn-success"
+                        th:formaction="@{/web/order_travelers/create/{order_id}(order_id=${order_travelers.orders.order_id})}">
+                        建立
+                    </button>
+
+                    <a
+                        th:href="@{/web/order_travelers}"
+                        class="btn btn-primary">
+                        取消
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title th:text="${isEdit} ? '編輯款項資料' : '建立款項資料'">
+        款項資料表單
+    </title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 40px 20px;
+            min-height: 100vh;
+
+            font-family:
+                "Noto Serif TC",
+                "Microsoft JhengHei",
+                "PingFang TC",
+                serif;
+
+            color: #3f493f;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+
+            background-image:
+                linear-gradient(
+                    rgba(30, 55, 38, 0.28),
+                    rgba(30, 55, 38, 0.28)
+                ),
+                url("/images/thailan2.jpg");
+
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+
+            z-index: -2;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+
+            background: rgba(255, 255, 245, 0.10);
+            backdrop-filter: blur(1px);
+
+            z-index: -1;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 850px;
+
+            margin: 0 auto;
+            padding: 38px 42px 45px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(250, 249, 239, 0.94),
+                    rgba(239, 240, 224, 0.88)
+                );
+
+            border-radius: 28px;
+
+            box-shadow:
+                0 18px 45px rgba(20, 50, 30, 0.30),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.55);
+
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 7px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #176b4b,
+                    #4d896c,
+                    #c99a3b,
+                    #4d896c,
+                    #176b4b
+                );
+        }
+
+        h1 {
+            margin: 0 0 10px;
+
+            text-align: center;
+
+            color: #31583f;
+
+            font-size: 34px;
+            letter-spacing: 5px;
+            font-weight: 700;
+        }
+
+        .page-subtitle {
+            text-align: center;
+            margin-bottom: 30px;
+
+            color: #777d6d;
+
+            font-size: 15px;
+            letter-spacing: 2px;
+        }
+
+        .form-card {
+            margin-top: 25px;
+
+            background:
+                rgba(255, 255, 255, 0.58);
+
+            border-radius: 20px;
+
+            box-shadow:
+                0 8px 22px rgba(35, 60, 40, 0.12);
+
+            overflow: hidden;
+
+            border:
+                1px solid rgba(100, 110, 90, 0.15);
+        }
+
+        .form-header {
+            padding: 18px 25px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #285d43,
+                    #397354
+                );
+
+            color: white;
+
+            font-size: 17px;
+            font-weight: 600;
+            letter-spacing: 2px;
+
+            border-bottom:
+                3px solid #c8a14a;
+        }
+
+        .form-body {
+            padding: 28px 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+
+            color: #52604e;
+
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        input,
+        select {
+            width: 100%;
+
+            padding: 12px 15px;
+
+            border:
+                1px solid rgba(100, 110, 90, 0.25);
+
+            border-radius: 10px;
+
+            background:
+                rgba(255, 255, 255, 0.78);
+
+            color: #3f493f;
+
+            font-family:
+                "Noto Serif TC",
+                "Microsoft JhengHei",
+                sans-serif;
+
+            font-size: 15px;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+
+            border-color: #397052;
+
+            box-shadow:
+                0 0 0 3px rgba(57, 112, 82, 0.12);
+        }
+
+        .hidden-info {
+            padding: 12px 15px;
+
+            margin-bottom: 20px;
+
+            background:
+                rgba(255, 247, 218, 0.65);
+
+            border:
+                1px solid rgba(200, 161, 74, 0.25);
+
+            border-radius: 10px;
+
+            color: #715d2a;
+
+            font-size: 14px;
+        }
+
+        .bottom-actions {
+            display: flex;
+
+            justify-content: center;
+            align-items: center;
+
+            gap: 14px;
+
+            margin-top: 30px;
+
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+
+            padding: 11px 25px;
+
+            margin: 3px;
+
+            border: none;
+            border-radius: 25px;
+
+            text-decoration: none;
+
+            font-family:
+                "Noto Serif TC",
+                "Microsoft JhengHei",
+                sans-serif;
+
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1px;
+
+            cursor: pointer;
+
+            transition: all 0.2s ease;
+
+            box-shadow:
+                0 3px 8px rgba(0, 0, 0, 0.12);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 6px 14px rgba(0, 0, 0, 0.18);
+        }
+
+        .btn-success {
+            background:
+                linear-gradient(
+                    135deg,
+                    #197451,
+                    #39906b
+                );
+
+            color: white;
+        }
+
+        .btn-primary {
+            background:
+                linear-gradient(
+                    135deg,
+                    #5d7f72,
+                    #78988b
+                );
+
+            color: white;
+        }
+
+        @media (max-width: 600px) {
+
+            body {
+                padding: 10px 5px;
+            }
+
+            .container {
+                width: 100%;
+                padding: 28px 15px 30px;
+                border-radius: 20px;
+            }
+
+            h1 {
+                font-size: 25px;
+                letter-spacing: 3px;
+            }
+
+            .form-body {
+                padding: 22px 18px;
+            }
+
+            .bottom-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .bottom-actions .btn {
+                text-align: center;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1 th:text="${isEdit} ? '編輯款項' : '建立新款項'">
+        款項表單
+    </h1>
+
+    <div class="page-subtitle">
+        PAYMENT INFORMATION
+    </div>
+
+    <div class="form-card">
+
+        <div class="form-header">
+            款項資料
+        </div>
+
+        <div class="form-body">
+
+            <form
+                th:object="${payments}"
+                method="post">
+
+                <input
+                    type="hidden"
+                    th:field="*{orders.order_id}">
+
+                <div class="hidden-info">
+                    所屬訂單 ID：
+                    <strong th:text="${payments.orders.order_id}">
+                        order_id
+                    </strong>
+                </div>
+
+                <div class="form-group">
+
+                    <label for="payment_method">
+                        支付方式
+                    </label>
+
+                    <select
+                        id="payment_method"
+                        th:field="*{payment_method}"
+                        required>
+
+                        <option value="" disabled>
+                            請選擇支付方式
+                        </option>
+
+                        <option value="CASH">
+                            CASH
+                        </option>
+
+                        <option value="CREDIT_CARD">
+                            CREDIT_CARD
+                        </option>
+
+                        <option value="ATM">
+                            ATM
+                        </option>
+
+                        <option value="MOBILE_PAY">
+                            MOBILE_PAY
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="payment_status">
+                        款項狀態
+                    </label>
+
+                    <select
+                        id="payment_status"
+                        th:field="*{payment_status}"
+                        required>
+
+                        <option value="" disabled>
+                            請選擇款項狀態
+                        </option>
+
+                        <option value="PENDING">
+                            PENDING
+                        </option>
+
+                        <option value="SUCCESS">
+                            SUCCESS
+                        </option>
+
+                        <option value="FAILED">
+                            FAILED
+                        </option>
+
+                        <option value="EXPIRED">
+                            EXPIRED
+                        </option>
+
+                        <option value="REFUNDED">
+                            REFUNDED
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="amount">
+                        款項金額
+                    </label>
+
+                    <input
+                        type="number"
+                        id="amount"
+                        th:field="*{amount}"
+                        min="0"
+                        step="0.01"
+                        required>
+
+                </div>
+
+                <div class="bottom-actions">
+
+                    <button
+                        th:if="${isEdit}"
+                        type="submit"
+                        class="btn btn-success"
+                        th:formaction="@{/web/payments/{payment_id}/edit(payment_id=${payments.payment_id})}">
+                        更新
+                    </button>
+
+                    <button
+                        th:unless="${isEdit}"
+                        type="submit"
+                        class="btn btn-success"
+                        th:formaction="@{/web/payments/create/{order_id}(order_id=${payments.orders.order_id})}">
+                        建立
+                    </button>
+
+                    <a
+                        th:href="@{/web/payments}"
+                        class="btn btn-primary">
+                        取消
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

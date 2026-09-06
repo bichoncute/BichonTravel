@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>付款</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 40px 20px;
+            min-height: 100vh;
+
+            font-family:
+                "Noto Serif TC",
+                "Microsoft JhengHei",
+                "PingFang TC",
+                serif;
+
+            color: #3f493f;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+
+            background-image:
+                linear-gradient(
+                    rgba(30, 55, 38, 0.28),
+                    rgba(30, 55, 38, 0.28)
+                ),
+                url("/images/thailand1.jpg");
+
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+
+            z-index: -2;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+
+            background: rgba(255, 255, 245, 0.10);
+            backdrop-filter: blur(1px);
+
+            z-index: -1;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 850px;
+
+            margin: 0 auto;
+            padding: 38px 42px 45px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(250, 249, 239, 0.94),
+                    rgba(239, 240, 224, 0.88)
+                );
+
+            border-radius: 28px;
+
+            box-shadow:
+                0 18px 45px rgba(20, 50, 30, 0.30),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.55);
+
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: "";
+            position: absolute;
+
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 7px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #176b4b,
+                    #4d896c,
+                    #c99a3b,
+                    #4d896c,
+                    #176b4b
+                );
+        }
+
+        h1 {
+            margin: 0 0 10px;
+
+            text-align: center;
+
+            color: #31583f;
+
+            font-size: 34px;
+            letter-spacing: 5px;
+            font-weight: 700;
+        }
+
+        .page-subtitle {
+            text-align: center;
+
+            margin-bottom: 30px;
+
+            color: #777d6d;
+
+            font-size: 15px;
+            letter-spacing: 2px;
+        }
+
+        .payment-card {
+            margin-top: 25px;
+
+            background:
+                rgba(255, 255, 255, 0.58);
+
+            border-radius: 20px;
+
+            box-shadow:
+                0 8px 22px rgba(35, 60, 40, 0.12);
+
+            overflow: hidden;
+
+            border:
+                1px solid rgba(100, 110, 90, 0.15);
+        }
+
+        .payment-header {
+            padding: 18px 25px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #285d43,
+                    #397354
+                );
+
+            color: white;
+
+            font-size: 17px;
+            font-weight: 600;
+            letter-spacing: 2px;
+
+            border-bottom:
+                3px solid #c8a14a;
+        }
+
+        .payment-body {
+            padding: 25px;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: center;
+
+            min-height: 58px;
+
+            border-bottom:
+                1px solid rgba(100, 110, 90, 0.16);
+        }
+
+        .info-label {
+            width: 220px;
+            flex-shrink: 0;
+
+            color: #52604e;
+
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .info-value {
+            flex: 1;
+
+            color: #3f493f;
+
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .order-id {
+            color: #8b712e;
+            font-weight: 700;
+        }
+
+        .amount {
+            color: #bd2929;
+            font-size: 21px;
+            font-weight: 700;
+        }
+
+        .countdown-box {
+            margin: 25px 0;
+
+            padding: 20px;
+
+            text-align: center;
+
+            background:
+                rgba(255, 247, 218, 0.75);
+
+            border:
+                1px solid rgba(200, 161, 74, 0.35);
+
+            border-radius: 15px;
+        }
+
+        .countdown-title {
+            color: #715d2a;
+
+            font-size: 14px;
+            letter-spacing: 2px;
+
+            margin-bottom: 8px;
+        }
+
+        #countdown {
+            display: block;
+
+            color: #bd2929;
+
+            font-size: 30px;
+            font-weight: 700;
+
+            letter-spacing: 2px;
+        }
+
+        .form-group {
+            margin-top: 25px;
+        }
+
+        label {
+            display: block;
+
+            margin-bottom: 8px;
+
+            color: #52604e;
+
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        select {
+            width: 100%;
+
+            padding: 12px 15px;
+
+            border:
+                1px solid rgba(100, 110, 90, 0.25);
+
+            border-radius: 10px;
+
+            background:
+                rgba(255, 255, 255, 0.78);
+
+            color: #3f493f;
+
+            font-family:
+                "Noto Serif TC",
+                "Microsoft JhengHei",
+                sans-serif;
+
+            font-size: 15px;
+        }
+
+        .bottom-actions {
+            display: flex;
+
+            justify-content: center;
+            align-items: center;
+
+            margin-top: 30px;
+        }
+
+        .btn {
+            display: inline-block;
+
+            padding: 12px 30px;
+
+            border: none;
+            border-radius: 25px;
+
+            font-family:
+                "Noto Serif TC",
+                "Microsoft JhengHei",
+                sans-serif;
+
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 1px;
+
+            cursor: pointer;
+
+            transition: all 0.2s ease;
+
+            box-shadow:
+                0 3px 8px rgba(0, 0, 0, 0.12);
+        }
+
+        .btn-success {
+            background:
+                linear-gradient(
+                    135deg,
+                    #197451,
+                    #39906b
+                );
+
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #126043,
+                    #2e7959
+                );
+
+            box-shadow:
+                0 6px 14px rgba(0, 0, 0, 0.18);
+        }
+
+        .btn:disabled {
+            background: #999;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .warning-text {
+            margin-top: 15px;
+
+            text-align: center;
+
+            color: #777d6d;
+
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+
+            body {
+                padding: 10px 5px;
+            }
+
+            .container {
+                width: 100%;
+                padding: 28px 15px 30px;
+                border-radius: 20px;
+            }
+
+            h1 {
+                font-size: 25px;
+                letter-spacing: 3px;
+            }
+
+            .info-row {
+                display: block;
+                padding: 12px 0;
+            }
+
+            .info-label {
+                width: 100%;
+                margin-bottom: 6px;
+            }
+
+            .info-value {
+                width: 100%;
+            }
+
+            #countdown {
+                font-size: 26px;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>付款</h1>
+
+    <div class="page-subtitle">
+        PAYMENT CHECKOUT
+    </div>
+
+    <div class="payment-card">
+
+        <div class="payment-header">
+            訂單付款資訊
+        </div>
+
+        <div class="payment-body">
+
+            <div class="info-row">
+
+                <span class="info-label">
+                    訂單編號
+                </span>
+
+                <span
+                    class="info-value order-id"
+                    th:text="${payments.orders.order_id}">
+                    100
+                </span>
+
+            </div>
+
+            <div class="info-row">
+
+                <span class="info-label">
+                    訂單金額
+                </span>
+
+                <span
+                    class="info-value amount"
+                    th:text="${payments.orders.total_amount}">
+                    50000
+                </span>
+
+            </div>
+
+            <div class="countdown-box">
+
+                <div class="countdown-title">
+                    剩餘付款時間
+                </div>
+
+                <span id="countdown">
+                    計算中...
+                </span>
+
+            </div>
+
+            <form
+                id="paymentForm"
+                th:action="@{/web/payments/checkout/{payment_id}(payment_id=${payments.payment_id})}"
+                method="post">
+
+                <div class="form-group">
+
+                    <label for="payment_method">
+                        付款方式
+                    </label>
+
+                    <select
+                        id="payment_method"
+                        name="payment_method"
+                        required>
+
+                        <option value="">
+                            請選擇付款方式
+                        </option>
+
+                        <option value="CREDIT_CARD">
+                            信用卡
+                        </option>
+
+                        <option value="ATM">
+                            ATM
+                        </option>
+
+                        <option value="MOBILE_PAY">
+                            行動支付
+                        </option>
+
+                        <option value="CASH">
+                            現金
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="bottom-actions">
+
+                    <button
+                        type="submit"
+                        id="submitBtn"
+                        class="btn btn-success">
+
+                        確認付款
+
+                    </button>
+
+                </div>
+
+                <div class="warning-text">
+                    請於付款期限內完成付款，逾時訂單將自動失效。
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script th:inline="javascript">
+
+    const expireTime =
+        /*[[${expiresAtMillis}]]*/ 0;
+
+    const countdownElement =
+        document.getElementById("countdown");
+
+    const submitButton =
+        document.getElementById("submitBtn");
+
+    console.log(
+        "付款截止時間 timestamp：",
+        expireTime
+    );
+
+    console.log(
+        "目前時間 timestamp：",
+        new Date().getTime()
+    );
+
+    let timer = null;
+
+
+    function updateCountdown() {
+
+        const now =
+            new Date().getTime();
+
+        const distance =
+            expireTime - now;
+
+        const secondsLeft =
+            Math.ceil(distance / 1000);
+
+        console.log(
+            "剩餘秒數：",
+            secondsLeft
+        );
+
+
+        if (secondsLeft > 0) {
+
+            countdownElement.innerText =
+                secondsLeft + " 秒";
+
+        } else {
+
+            clearInterval(timer);
+
+            countdownElement.innerText =
+                "已過期";
+
+            submitButton.disabled =
+                true;
+
+
+            fetch(
+                /*[[@{/web/payments/checkout/{payment_id}/expire(payment_id=${payments.payment_id})}]]*/ "",
+                {
+                    method: "POST"
+                }
+            )
+            .then(response => {
+
+                if (response.redirected) {
+
+                    window.location.href =
+                        response.url;
+
+                } else {
+
+                    alert(
+                        "付款時間已過期，請重新下單！"
+                    );
+
+                }
+
+            })
+            .catch(error => {
+
+                console.error(
+                    "付款過期處理失敗：",
+                    error
+                );
+
+                alert(
+                    "付款時間已過期，請重新下單！"
+                );
+
+            });
+
+        }
+
+    }
+
+
+    if (expireTime > 0) {
+
+        updateCountdown();
+
+        timer =
+            setInterval(
+                updateCountdown,
+                1000
+            );
+
+    } else {
+
+        countdownElement.innerText =
+            "付款期限不存在";
+
+        console.error(
+            "expiresAtMillis 沒有正確傳入！"
+        );
+
+    }
+
+</script>
+
+</body>
+</html>

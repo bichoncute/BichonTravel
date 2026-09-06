@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>瀏覽紀錄 | 探索世界</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Noto Sans TC", sans-serif;
+        }
+
+        body {
+
+            min-height: 100vh;
+
+            background:
+                linear-gradient(rgba(25,55,42,0.52), rgba(25,55,42,0.52)),
+                url('/images/egypt.jpg') center center / cover fixed no-repeat;
+
+            color: #34443a;
+
+            padding: 45px 20px;
+        }
+
+        .container {
+            width: 94%;
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        /* =========================
+           標題
+        ========================= */
+
+        .page-title {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .page-title h1 {
+            font-size: 42px;
+            letter-spacing: 5px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.35);
+        }
+
+        .page-title p {
+            margin-top: 8px;
+            letter-spacing: 2px;
+        }
+
+        /* =========================
+           面板
+        ========================= */
+
+        .content-panel {
+
+            background: rgba(248,247,238,0.94);
+
+            border-radius: 28px;
+
+            padding: 35px;
+
+            box-shadow:
+                0 15px 40px rgba(0,0,0,0.25);
+        }
+
+        /* =========================
+           成功訊息
+        ========================= */
+
+        .alert {
+
+            padding: 14px 20px;
+            margin-bottom: 25px;
+
+            border-radius: 12px;
+
+            background: #e5f1e8;
+            color: #286044;
+
+            border-left: 5px solid #3d8b65;
+        }
+
+        /* =========================
+           標題資訊
+        ========================= */
+
+        .history-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 25px;
+        }
+
+        .history-header h2 {
+
+            color: #315b48;
+
+            font-size: 25px;
+
+            letter-spacing: 2px;
+        }
+
+        .history-count {
+
+            color: #d19a30;
+
+            font-size: 22px;
+
+            font-weight: 700;
+        }
+
+        /* =========================
+           表格
+        ========================= */
+
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 16px;
+        }
+
+        table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+            background: rgba(255,255,255,0.7);
+        }
+
+        th {
+
+            background: #3c6b53;
+
+            color: white;
+
+            padding: 17px;
+
+            letter-spacing: 1px;
+        }
+
+        td {
+
+            padding: 18px;
+
+            border-bottom: 1px solid #dddccc;
+
+            color: #465449;
+        }
+
+        tr:hover td {
+
+            background: #f1f4e9;
+        }
+
+        /* =========================
+           產品名稱
+        ========================= */
+
+        .product-name {
+
+            color: #315b48;
+
+            font-size: 17px;
+
+            font-weight: 700;
+        }
+
+        /* =========================
+           按鈕
+        ========================= */
+
+        .btn {
+
+            display: inline-flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            padding: 9px 17px;
+
+            margin: 2px;
+
+            border-radius: 22px;
+
+            text-decoration: none;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            transition: all 0.2s ease;
+        }
+
+        .btn-cart {
+
+            background: #6e9678;
+
+            color: white;
+        }
+
+        .btn-cart:hover {
+
+            background: #4f765c;
+
+            transform: translateY(-2px);
+        }
+
+        .btn-buy {
+
+            background: #d9a441;
+
+            color: white;
+        }
+
+        .btn-buy:hover {
+
+            background: #c18b28;
+
+            transform: translateY(-2px);
+        }
+
+        /* =========================
+           底部
+        ========================= */
+
+        .footer-actions {
+
+            display: flex;
+
+            gap: 15px;
+
+            margin-top: 30px;
+        }
+
+        .btn-footer {
+
+            padding: 12px 24px;
+
+            border-radius: 25px;
+
+            text-decoration: none;
+
+            font-weight: 600;
+
+            transition: all 0.2s ease;
+        }
+
+        .btn-member {
+
+            background: #3c6b53;
+
+            color: white;
+        }
+
+        .btn-home {
+
+            background: transparent;
+
+            border: 2px solid #3c6b53;
+
+            color: #3c6b53;
+        }
+
+        .btn-footer:hover {
+
+            transform: translateY(-2px);
+        }
+
+        /* =========================
+           RWD
+        ========================= */
+
+        @media(max-width:700px) {
+
+            body {
+                padding: 25px 10px;
+            }
+
+            .content-panel {
+                padding: 20px 15px;
+            }
+
+            .page-title h1 {
+                font-size: 30px;
+            }
+
+            .history-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .footer-actions {
+                flex-direction: column;
+            }
+
+            .btn-footer {
+                text-align: center;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+
+    <!-- 標題 -->
+
+    <div class="page-title">
+
+        <h1>瀏覽紀錄</h1>
+
+        <p>My Travel Footprints</p>
+
+    </div>
+
+
+    <div class="content-panel">
+
+
+        <!-- 成功訊息 -->
+
+        <div
+            th:if="${successMessage}"
+            class="alert"
+            th:text="${successMessage}">
+
+            成功訊息
+
+        </div>
+
+
+        <!-- 標題 -->
+
+        <div class="history-header">
+
+            <h2>
+                最近瀏覽的行程
+            </h2>
+
+            <div>
+
+                共
+
+                <span
+                    class="history-count"
+                    th:text="${Browse_historyCount}">
+                    0
+                </span>
+
+                項紀錄
+
+            </div>
+
+        </div>
+
+
+        <!-- 表格 -->
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>產品名稱</th>
+
+                        <th>瀏覽時間</th>
+
+                        <th>操作</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    <tr
+                        th:each="browseHistory : ${Browse_history}">
+
+
+                        <td
+                            class="product-name"
+                            th:text="${browseHistory.products.name}">
+
+                            產品名稱
+
+                        </td>
+
+
+                        <td
+                            th:text="${browseHistory.viewed_at}">
+
+                            瀏覽時間
+
+                        </td>
+
+
+                        <td>
+
+                            <!-- 加入購物車 -->
+
+                            <a
+                                th:href="@{/web/member/cart/create/{product_id}(product_id=${browseHistory.products.product_id})}"
+                                class="btn btn-cart">
+
+                                加入購物車
+
+                            </a>
+
+
+                            <!-- 立即購買 -->
+
+                            <a
+                                th:href="@{/web/frontproducts/buy/{product_id}(product_id=${browseHistory.products.product_id})}"
+                                class="btn btn-buy">
+
+                                立即購買
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- 底部 -->
+
+        <div class="footer-actions">
+
+            <a
+                th:href="@{/web/member}"
+                class="btn-footer btn-member">
+
+                返回會員專區
+
+            </a>
+
+
+            <a
+                th:href="@{/web/frontproducts}"
+                class="btn-footer btn-home">
+
+                探索更多行程
+
+            </a>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

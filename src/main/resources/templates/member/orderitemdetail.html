@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+```
+<title>訂單明細 | 探索世界</title>
+
+<!-- Google Fonts -->
+<link rel="preconnect"
+      href="https://fonts.googleapis.com">
+
+<link rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin>
+
+<link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@500;600;700&display=swap"
+    rel="stylesheet">
+
+<!-- Material Icons -->
+<link
+    href="https://fonts.googleapis.com/icon?family=Material+Icons+Round"
+    rel="stylesheet">
+
+
+<style>
+
+    /* =====================================================
+       全域設定
+    ===================================================== */
+
+    :root {
+
+        --forest-dark: #274b3c;
+        --forest: #39705a;
+        --forest-light: #6e9a82;
+
+        --cream: rgba(247, 245, 233, 0.92);
+        --cream-light: rgba(255, 255, 250, 0.70);
+
+        --text-main: #3c403c;
+        --text-secondary: #777a73;
+
+        --border: rgba(100, 105, 92, 0.20);
+
+        --price: #c6283d;
+        --price-dark: #a91f32;
+
+        --success: #237c5a;
+        --success-bg: #e2f1e8;
+
+        --warning: #b47720;
+        --warning-bg: #fff1d6;
+
+        --shadow:
+            0 15px 45px rgba(28, 48, 37, 0.20);
+    }
+
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+
+    body {
+
+        font-family:
+            'Noto Sans TC',
+            sans-serif;
+
+        color: var(--text-main);
+
+        min-height: 100vh;
+
+        background-color: #314c3e;
+    }
+
+
+    /* =====================================================
+       整個頁面背景
+    ===================================================== */
+
+    .page {
+
+        min-height: 100vh;
+
+        position: relative;
+
+        padding: 35px 25px 45px;
+
+        background-image:
+
+            linear-gradient(
+                rgba(24, 48, 37, 0.38),
+                rgba(24, 48, 37, 0.38)
+            ),
+
+            url('/images/europe7.jpg');
+
+        background-size: cover;
+
+        background-position: center;
+
+        background-attachment: fixed;
+
+        display: flex;
+
+        justify-content: center;
+
+        align-items: center;
+    }
+
+
+    /* =====================================================
+       中央內容區
+    ===================================================== */
+
+    .main-container {
+
+        width: 100%;
+
+        max-width: 900px;
+
+        position: relative;
+
+        z-index: 2;
+    }
+
+
+    /* =====================================================
+       主標題
+    ===================================================== */
+
+    .page-header {
+
+        text-align: center;
+
+        color: white;
+
+        margin-bottom: 22px;
+    }
+
+
+    .brand-title {
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        gap: 14px;
+
+        margin-bottom: 5px;
+    }
+
+
+    .brand-icon {
+
+        font-size: 43px;
+
+        filter:
+            drop-shadow(
+                0 2px 5px rgba(0, 0, 0, 0.25)
+            );
+    }
+
+
+    .brand-title h1 {
+
+        font-family:
+            'Noto Serif TC',
+            serif;
+
+        font-size: 42px;
+
+        font-weight: 700;
+
+        letter-spacing: 8px;
+
+        text-shadow:
+            0 2px 8px rgba(0, 0, 0, 0.30);
+    }
+
+
+    .english-title {
+
+        font-size: 16px;
+
+        letter-spacing: 3px;
+
+        opacity: 0.88;
+
+        margin-left: 10px;
+    }
+
+
+    /* 標題下方裝飾線 */
+
+    .title-decoration {
+
+        width: 70px;
+
+        height: 3px;
+
+        margin: 13px auto 0;
+
+        background: rgba(255,255,255,0.85);
+
+        border-radius: 5px;
+
+        box-shadow:
+            0 1px 5px rgba(0,0,0,0.15);
+    }
+
+
+    /* =====================================================
+       中央半透明面板
+    ===================================================== */
+
+    .content-panel {
+
+        background:
+
+            linear-gradient(
+                135deg,
+                rgba(250, 249, 239, 0.95),
+                rgba(242, 241, 225, 0.89)
+            );
+
+        border-radius: 28px;
+
+        padding: 30px 38px 28px;
+
+        border: 1px solid rgba(255,255,255,0.65);
+
+        box-shadow: var(--shadow);
+
+        backdrop-filter: blur(7px);
+
+        -webkit-backdrop-filter: blur(7px);
+    }
+
+
+    /* =====================================================
+       上方標題列
+    ===================================================== */
+
+    .section-header {
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 10px;
+
+        margin-bottom: 24px;
+
+        padding-bottom: 16px;
+
+        border-bottom:
+            1px solid rgba(95,100,90,0.20);
+    }
+
+
+    .section-header .material-icons-round {
+
+        font-size: 29px;
+
+        color: var(--forest);
+    }
+
+
+    .section-title {
+
+        font-family:
+            'Noto Serif TC',
+            serif;
+
+        font-size: 25px;
+
+        font-weight: 600;
+
+        color: var(--forest-dark);
+    }
+
+
+    .section-subtitle {
+
+        margin-left: auto;
+
+        color: var(--text-secondary);
+
+        font-size: 14px;
+    }
+
+
+    /* =====================================================
+       訂單明細卡片
+    ===================================================== */
+
+    .detail-card {
+
+        background:
+            rgba(255,255,255,0.58);
+
+        border:
+            1px solid rgba(100,105,92,0.16);
+
+        border-radius: 18px;
+
+        overflow: hidden;
+
+        box-shadow:
+            0 5px 18px rgba(40,55,45,0.08);
+    }
+
+
+    /* =====================================================
+       每一列資料
+    ===================================================== */
+
+    .detail-row {
+
+        display: flex;
+
+        align-items: center;
+
+        min-height: 58px;
+
+        padding: 13px 20px;
+
+        border-bottom:
+            1px solid rgba(100,105,92,0.14);
+
+        transition:
+            background-color 0.2s ease;
+    }
+
+
+    .detail-row:last-child {
+
+        border-bottom: none;
+    }
+
+
+    .detail-row:hover {
+
+        background:
+            rgba(255,255,255,0.72);
+    }
+
+
+    /* =====================================================
+       左側標籤
+    ===================================================== */
+
+    .detail-label {
+
+        width: 230px;
+
+        flex-shrink: 0;
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 8px;
+
+        color: var(--forest-dark);
+
+        font-size: 15px;
+
+        font-weight: 600;
+    }
+
+
+    .detail-label .material-icons-round {
+
+        font-size: 20px;
+
+        color: var(--forest);
+    }
+
+
+    /* =====================================================
+       右側資料
+    ===================================================== */
+
+    .detail-value {
+
+        flex: 1;
+
+        color: var(--text-main);
+
+        font-size: 15px;
+
+        font-weight: 500;
+
+        text-align: right;
+
+        word-break: break-word;
+    }
+
+
+    /* =====================================================
+       ID 類資料
+    ===================================================== */
+
+    .value-id {
+
+        color: var(--forest-dark);
+
+        font-weight: 700;
+    }
+
+
+    /* =====================================================
+       人數
+    ===================================================== */
+
+    .value-quantity {
+
+        color: var(--forest);
+
+        font-size: 17px;
+
+        font-weight: 700;
+    }
+
+
+    /* =====================================================
+       單價
+    ===================================================== */
+
+    .value-price {
+
+        color: var(--text-main);
+
+        font-weight: 600;
+    }
+
+
+    .value-price::before {
+
+        content: '$';
+
+        font-size: 13px;
+
+        margin-right: 2px;
+
+        color: var(--text-secondary);
+    }
+
+
+    /* =====================================================
+       總費用
+    ===================================================== */
+
+    .total-row {
+
+        background:
+            linear-gradient(
+                135deg,
+                rgba(255,247,239,0.82),
+                rgba(255,243,232,0.70)
+            );
+
+        min-height: 78px;
+    }
+
+
+    .total-row .detail-label {
+
+        font-size: 17px;
+
+        color: var(--price-dark);
+    }
+
+
+    .total-row .detail-label .material-icons-round {
+
+        color: var(--price);
+    }
+
+
+    .total-price {
+
+        color: var(--price);
+
+        font-size: 25px;
+
+        font-weight: 700;
+    }
+
+
+    .total-price::before {
+
+        content: '$';
+
+        font-size: 15px;
+
+        margin-right: 3px;
+    }
+
+
+    /* =====================================================
+       下一步提示
+    ===================================================== */
+
+    .next-step-box {
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 10px;
+
+        margin-top: 22px;
+
+        padding: 13px 17px;
+
+        border-radius: 11px;
+
+        background:
+            rgba(226,241,232,0.82);
+
+        border:
+            1px solid rgba(35,124,90,0.16);
+
+        color: #28664d;
+
+        font-size: 14px;
+
+        line-height: 1.6;
+    }
+
+
+    .next-step-box .material-icons-round {
+
+        color: var(--success);
+
+        font-size: 22px;
+
+        flex-shrink: 0;
+    }
+
+
+    /* =====================================================
+       底部按鈕區
+    ===================================================== */
+
+    .bottom-actions {
+
+        display: flex;
+
+        justify-content: center;
+
+        align-items: center;
+
+        gap: 15px;
+
+        margin-top: 25px;
+
+        padding-top: 22px;
+
+        border-top:
+            1px solid rgba(95,100,90,0.20);
+    }
+
+
+    /* =====================================================
+       通用按鈕
+    ===================================================== */
+
+    .btn {
+
+        display: inline-flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        gap: 8px;
+
+        min-width: 210px;
+
+        padding: 12px 25px;
+
+        border-radius: 25px;
+
+        text-decoration: none;
+
+        font-size: 15px;
+
+        font-weight: 600;
+
+        transition:
+            all 0.2s ease;
+    }
+
+
+    .btn .material-icons-round {
+
+        font-size: 20px;
+    }
+
+
+    /* =====================================================
+       下一步：填寫旅客資料
+    ===================================================== */
+
+    .btn-next {
+
+        color: white;
+
+        background:
+
+            linear-gradient(
+                135deg,
+                #39765d,
+                #285a45
+            );
+
+        border:
+            1px solid rgba(255,255,255,0.30);
+
+        box-shadow:
+            0 4px 10px rgba(39,75,60,0.18);
+    }
+
+
+    .btn-next:hover {
+
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 7px 15px rgba(39,75,60,0.25);
+    }
+
+
+    /* =====================================================
+       返回訂單
+    ===================================================== */
+
+    .btn-back {
+
+        color: var(--forest-dark);
+
+        background:
+            rgba(255,255,255,0.72);
+
+        border:
+            1px solid rgba(65,95,78,0.30);
+    }
+
+
+    .btn-back:hover {
+
+        background: white;
+
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 5px 12px rgba(50,70,58,0.13);
+    }
+
+
+    /* =====================================================
+       底部小標語
+    ===================================================== */
+
+    .footer-slogan {
+
+        text-align: center;
+
+        color: white;
+
+        margin-top: 18px;
+
+        font-family:
+            'Noto Serif TC',
+            serif;
+
+        font-size: 15px;
+
+        letter-spacing: 3px;
+
+        text-shadow:
+            0 1px 5px rgba(0,0,0,0.30);
+
+        opacity: 0.92;
+    }
+
+
+    .footer-slogan span {
+
+        margin: 0 10px;
+
+        opacity: 0.75;
+    }
+
+
+    /* =====================================================
+       平板
+    ===================================================== */
+
+    @media (max-width: 900px) {
+
+        .page {
+
+            padding: 25px 15px 35px;
+
+            align-items: flex-start;
+        }
+
+
+        .content-panel {
+
+            padding: 25px 20px 22px;
+
+            border-radius: 22px;
+        }
+
+
+        .brand-title h1 {
+
+            font-size: 34px;
+
+            letter-spacing: 5px;
+        }
+
+
+        .english-title {
+
+            font-size: 14px;
+        }
+
+
+        .detail-label {
+
+            width: 190px;
+        }
+
+
+        .bottom-actions {
+
+            flex-direction: column;
+        }
+
+
+        .btn {
+
+            width: 100%;
+
+            max-width: 350px;
+        }
+    }
+
+
+    /* =====================================================
+       手機
+    ===================================================== */
+
+    @media (max-width: 600px) {
+
+        .page {
+
+            padding: 18px 10px 30px;
+
+            background-attachment: scroll;
+        }
+
+
+        .brand-title {
+
+            gap: 8px;
+        }
+
+
+        .brand-icon {
+
+            font-size: 32px;
+        }
+
+
+        .brand-title h1 {
+
+            font-size: 27px;
+
+            letter-spacing: 3px;
+        }
+
+
+        .english-title {
+
+            display: block;
+
+            margin: 3px 0 0;
+
+            font-size: 12px;
+
+            letter-spacing: 2px;
+        }
+
+
+        .content-panel {
+
+            padding: 20px 12px 18px;
+
+            border-radius: 18px;
+        }
+
+
+        .section-title {
+
+            font-size: 21px;
+        }
+
+
+        .section-subtitle {
+
+            display: none;
+        }
+
+
+        .detail-row {
+
+            display: block;
+
+            padding: 14px 16px;
+        }
+
+
+        .detail-label {
+
+            width: 100%;
+
+            margin-bottom: 5px;
+
+            font-size: 14px;
+        }
+
+
+        .detail-value {
+
+            display: block;
+
+            text-align: left;
+
+            padding-left: 28px;
+
+            font-size: 14px;
+        }
+
+
+        .total-row {
+
+            min-height: auto;
+        }
+
+
+        .total-row .detail-value {
+
+            text-align: left;
+        }
+
+
+        .total-price {
+
+            font-size: 22px;
+        }
+
+
+        .next-step-box {
+
+            font-size: 13px;
+        }
+
+
+        .footer-slogan {
+
+            font-size: 12px;
+
+            letter-spacing: 2px;
+        }
+    }
+
+</style>
+```
+
+</head>
+
+<body>
+
+<div class="page">
+
+```
+<div class="main-container">
+
+
+    <!-- =================================================
+         頁面標題
+    ================================================== -->
+
+    <header class="page-header">
+
+        <div class="brand-title">
+
+            <span class="material-icons-round brand-icon">
+                receipt_long
+            </span>
+
+            <h1>
+                訂單明細
+            </h1>
+
+            <span class="english-title">
+                Order Details
+            </span>
+
+        </div>
+
+
+        <div class="title-decoration"></div>
+
+    </header>
+
+
+    <!-- =================================================
+         中央內容面板
+    ================================================== -->
+
+    <section class="content-panel">
+
+
+        <!-- =================================================
+             區塊標題
+        ================================================== -->
+
+        <div class="section-header">
+
+            <span class="material-icons-round">
+                description
+            </span>
+
+            <span class="section-title">
+                訂單明細資料
+            </span>
+
+            <span class="section-subtitle">
+                Order Item Information
+            </span>
+
+        </div>
+
+
+        <!-- =================================================
+             訂單明細
+        ================================================== -->
+
+        <div class="detail-card">
+
+
+            <!-- order_item_id -->
+
+            <div class="detail-row">
+
+                <div class="detail-label">
+
+                    <span class="material-icons-round">
+                        tag
+                    </span>
+
+                    訂單明細編號
+
+                </div>
+
+                <div
+                    class="detail-value value-id"
+                    th:text="${order_item.order_item_id}">
+
+                    order_item_id
+
+                </div>
+
+            </div>
+
+
+            <!-- user_id -->
+
+            <div class="detail-row">
+
+                <div class="detail-label">
+
+                    <span class="material-icons-round">
+                        person
+                    </span>
+
+                    會員編號
+
+                </div>
+
+                <div
+                    class="detail-value value-id"
+                    th:text="${order_item.orders.users.id}">
+
+                    user_id
+
+                </div>
+
+            </div>
+
+
+            <!-- order_id -->
+
+            <div class="detail-row">
+
+                <div class="detail-label">
+
+                    <span class="material-icons-round">
+                        receipt
+                    </span>
+
+                    訂單編號
+
+                </div>
+
+                <div
+                    class="detail-value value-id"
+                    th:text="${order_item.orders.order_id}">
+
+                    order_id
+
+                </div>
+
+            </div>
+
+
+            <!-- product_id -->
+
+            <div class="detail-row">
+
+                <div class="detail-label">
+
+                    <span class="material-icons-round">
+                        tour
+                    </span>
+
+                    行程編號
+
+                </div>
+
+                <div
+                    class="detail-value value-id"
+                    th:text="${order_item.products.product_id}">
+
+                    product_id
+
+                </div>
+
+            </div>
+
+
+            <!-- 雙人房人數 -->
+
+            <div class="detail-row">
+
+                <div class="detail-label">
+
+                    <span class="material-icons-round">
+                        hotel
+                    </span>
+
+                    雙人房人數
+
+                </div>
+
+                <div
+                    class="detail-value value-quantity"
+                    th:text="${order_item.adult_double_qty}">
+
+                    0
+
+                </div>
+
+            </div>
+
+
+            <!-- 單人房人數 -->
+
+            <div class="detail-row">
+
+                <div class="detail-label">
+
+                    <span class="material-icons-round">
+                        single_bed
+                    </span>
+
+                    單人房人數
+
+                </div>
+
+                <div
+                    class="detail-value value-quantity"
+                    th:text="${order_item.adult_single_qty}">
+
+                    0
+
+                </div>
+
+            </div>
+
+
+            <!-- 嬰兒人數 -->
+
+            <div class="detail-row">
+
+                <div class="detail-label">
+
+                    <span class="material-icons-round">
+                        child_friendly
+                    </span>
+
+                    嬰兒人數
+
+                </div>
+
+                <div
+                    class="detail-value value-quantity"
+                    th:text="${order_item.infant_qty}">
+
+                    0
+
+                </div>
+
+            </div>
+
+
+            <!-- 雙人房每位價錢 -->
+
+            <div class="detail-row">
+
+                <div class="detail-label">
+
+                    <span class="material-icons-round">
+                        payments
+                    </span>
+
+                    雙人房每位價錢
+
+                </div>
+
+                <div
+                    class="detail-value value-price"
+                    th:text="${order_item.adult_double_unit_price}">
+
+                    0
+
+                </div>
+
+            </div>
+
+
+            <!-- 單人房每位價錢 -->
+
+            <div class="detail-row">
+
+                <div class="detail-label">
+
+                    <span class="material-icons-round">
+                        payments
+                    </span>
+
+                    單人房每位價錢
+
+                </div>
+
+                <div
+                    class="detail-value value-price"
+                    th:text="${order_item.adult_single_unit_price}">
+
+                    0
+
+                </div>
+
+            </div>
+
+
+            <!-- 嬰兒每位價錢 -->
+
+            <div class="detail-row">
+
+                <div class="detail-label">
+
+                    <span class="material-icons-round">
+                        payments
+                    </span>
+
+                    嬰兒每位價錢
+
+                </div>
+
+                <div
+                    class="detail-value value-price"
+                    th:text="${order_item.infant_unit_price}">
+
+                    0
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 總費用
+            ================================================== -->
+
+            <div class="detail-row total-row">
+
+                <div class="detail-label">
+
+                    <span class="material-icons-round">
+                        account_balance_wallet
+                    </span>
+
+                    總費用
+
+                </div>
+
+                <div
+                    class="detail-value total-price"
+                    th:text="${order_item.subtotal}">
+
+                    0
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =================================================
+             下一步提示
+        ================================================== -->
+
+        <div class="next-step-box">
+
+            <span class="material-icons-round">
+                info
+            </span>
+
+            <span>
+                訂單明細確認完成後，請繼續填寫本次行程的旅客資料。
+            </span>
+
+        </div>
+
+
+        <!-- =================================================
+             底部按鈕
+        ================================================== -->
+
+        <div class="bottom-actions">
+
+
+           
+
+
+            <!-- 下一步：填寫旅客資料 -->
+
+            <a
+                th:href="@{/web/order_travelers/order/{order_id}(order_id=${order_item.orders.order_id})}"
+                class="btn btn-next">
+
+                <span class="material-icons-round">
+                    arrow_forward
+                </span>
+
+                下一步：填寫旅客資料
+
+            </a>
+
+
+        </div>
+
+
+    </section>
+
+
+    <!-- =================================================
+         底部標語
+    ================================================== -->
+
+    <div class="footer-slogan">
+
+        探索世界
+
+        <span>•</span>
+
+        開啟您的專屬旅程
+
+    </div>
+
+
+</div>
+```
+
+</div>
+
+</body>
+
+</html>

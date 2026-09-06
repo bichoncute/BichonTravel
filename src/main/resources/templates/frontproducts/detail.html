@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>行程詳情</title>
+
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, "Microsoft JhengHei", sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 900px;
+            margin: 50px auto;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            margin: 0 0 10px 0;
+            font-size: 32px;
+        }
+
+        .page-header p {
+            margin: 0;
+            color: #777;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 14px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .card-title {
+            margin: 0 0 22px 0;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            font-size: 21px;
+        }
+
+        .product-name {
+            font-size: 25px;
+            font-weight: bold;
+            margin-bottom: 25px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .info-item {
+            background-color: #f8f9fb;
+            padding: 16px;
+            border-radius: 9px;
+        }
+
+        .info-label {
+            display: block;
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 7px;
+        }
+
+        .info-value {
+            display: block;
+            font-size: 16px;
+            font-weight: bold;
+            word-break: break-word;
+        }
+
+        .price-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .price-card {
+            background-color: #f8f9fb;
+            padding: 20px;
+            border-radius: 9px;
+            text-align: center;
+        }
+
+        .price-title {
+            color: #777;
+            margin-bottom: 10px;
+        }
+
+        .price {
+            font-size: 23px;
+            font-weight: bold;
+        }
+
+        .capacity-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .capacity-card {
+            padding: 20px;
+            border-radius: 9px;
+            background-color: #f8f9fb;
+            text-align: center;
+        }
+
+        .capacity-card .number {
+            font-size: 28px;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        .description {
+            line-height: 1.8;
+            background-color: #f8f9fb;
+            padding: 18px;
+            border-radius: 9px;
+            white-space: pre-wrap;
+        }
+
+        .notification {
+            line-height: 1.8;
+            background-color: #f8f9fb;
+            padding: 18px;
+            border-radius: 9px;
+            white-space: pre-wrap;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 7px 14px;
+            border-radius: 20px;
+            background-color: #eee;
+            font-weight: bold;
+        }
+
+        .system-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 13px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .system-row:last-child {
+            border-bottom: none;
+        }
+
+        .system-label {
+            color: #777;
+        }
+
+        .system-value {
+            font-weight: bold;
+            text-align: right;
+        }
+
+        .button-area {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .btn-primary {
+            background-color: #333;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #555;
+        }
+
+        @media (max-width: 650px) {
+
+            .container {
+                width: 94%;
+                margin: 30px auto;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .info-grid,
+            .capacity-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .price-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .system-row {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .system-value {
+                text-align: left;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+
+    <!-- 頁面標題 -->
+
+    <div class="page-header">
+
+        <h1>行程詳情</h1>
+
+        <p>查看完整的旅遊行程資訊</p>
+
+    </div>
+
+
+    <!-- 基本行程資訊 -->
+
+    <div class="card">
+
+        <h2 class="card-title">行程資訊</h2>
+
+        <div class="product-name"
+             th:text="${product.name}">
+            行程名稱
+        </div>
+
+        <div class="info-grid">
+
+            <div class="info-item">
+
+                <span class="info-label">
+                    出發機場
+                </span>
+
+                <span class="info-value"
+                      th:text="${product.departure_airport}">
+                    機場
+                </span>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span class="info-label">
+                    目的地
+                </span>
+
+                <span class="info-value"
+                      th:text="${product.destination}">
+                    目的地
+                </span>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span class="info-label">
+                    起飛日期
+                </span>
+
+                <span class="info-value"
+                      th:text="${product.fly_day}">
+                    起飛日
+                </span>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span class="info-label">
+                    返回日期
+                </span>
+
+                <span class="info-value"
+                      th:text="${product.back_day}">
+                    返回日
+                </span>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span class="info-label">
+                    行程狀態
+                </span>
+
+                <span class="info-value">
+
+                    <span class="status"
+                          th:text="${product.product_status}">
+                        狀態
+                    </span>
+
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- 價格 -->
+
+    <div class="card">
+
+        <h2 class="card-title">票價資訊</h2>
+
+        <div class="price-grid">
+
+
+            <div class="price-card">
+
+                <div class="price-title">
+                    成人雙人房
+                </div>
+
+                <div class="price"
+                     th:text="${product.adult_double_price}">
+                    0
+                </div>
+
+                <div>元</div>
+
+            </div>
+
+
+            <div class="price-card">
+
+                <div class="price-title">
+                    成人單人房
+                </div>
+
+                <div class="price"
+                     th:text="${product.adult_single_price}">
+                    0
+                </div>
+
+                <div>元</div>
+
+            </div>
+
+
+            <div class="price-card">
+
+                <div class="price-title">
+                    嬰兒
+                </div>
+
+                <div class="price"
+                     th:text="${product.infant_price}">
+                    0
+                </div>
+
+                <div>元</div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- 名額 -->
+
+    <div class="card">
+
+        <h2 class="card-title">名額資訊</h2>
+
+        <div class="capacity-grid">
+
+            <div class="capacity-card">
+
+                <div>
+                    最大人數
+                </div>
+
+                <div class="number"
+                     th:text="${product.max_capacity}">
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="capacity-card">
+
+                <div>
+                    剩餘機位
+                </div>
+
+                <div class="number"
+                     th:text="${product.available_capacity}">
+                    0
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- 商品描述 -->
+
+    <div class="card">
+
+        <h2 class="card-title">商品描述</h2>
+
+        <div class="description"
+             th:text="${product.description}">
+            商品描述
+        </div>
+
+    </div>
+
+
+    <!-- 注意事項 -->
+
+    <div class="card">
+
+        <h2 class="card-title">注意事項</h2>
+
+        <div class="notification"
+             th:text="${product.notification}">
+            註記
+        </div>
+
+    </div>
+
+
+    <!-- 系統資訊 -->
+
+    <div class="card">
+
+        <h2 class="card-title">系統資訊</h2>
+
+
+        <div class="system-row">
+
+            <span class="system-label">
+                創建時間
+            </span>
+
+            <span class="system-value"
+                  th:text="${product.created_at}">
+                創建時間
+            </span>
+
+        </div>
+
+
+        <div class="system-row">
+
+            <span class="system-label">
+                更新時間
+            </span>
+
+            <span class="system-value"
+                  th:text="${product.updated_at}">
+                更新時間
+            </span>
+
+        </div>
+
+
+        <div class="system-row">
+
+            <span class="system-label">
+                版本
+            </span>
+
+            <span class="system-value"
+                  th:text="${product.product_version}">
+                版本
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- 返回 -->
+
+    <div class="button-area">
+
+        <a class="btn btn-primary"
+           th:href="@{/web/frontproducts}">
+            返回商品首頁
+        </a>
+
+    </div>
+
+
+</div>
+
+</body>
+
+</html>
+```

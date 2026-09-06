@@ -1,0 +1,447 @@
+
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title th:text="${isExpired ? '付款時間過期' : (isSuccess ? '付款成功' : '付款失敗')}">
+        付款結果
+    </title>
+
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, "Microsoft JhengHei", sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 60px auto;
+        }
+
+        .result-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+        }
+
+        .result-header {
+            text-align: center;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .result-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 20px auto;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 35px;
+            font-weight: bold;
+            background-color: #f1f3f5;
+        }
+
+        .result-header h1 {
+            margin: 0 0 10px 0;
+            font-size: 30px;
+        }
+
+        .result-header p {
+            margin: 0;
+            color: #777;
+            font-size: 15px;
+        }
+
+        .detail-section {
+            margin-top: 30px;
+        }
+
+        .detail-title {
+            margin: 0 0 18px 0;
+            font-size: 20px;
+        }
+
+        .detail-card {
+            background-color: #f8f9fb;
+            border-radius: 10px;
+            padding: 5px 20px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #e5e7ea;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #777;
+        }
+
+        .detail-value {
+            font-weight: bold;
+            text-align: right;
+            word-break: break-word;
+        }
+
+        .amount {
+            font-size: 20px;
+        }
+
+        .message {
+            margin-top: 30px;
+            padding: 18px;
+            border-radius: 10px;
+            background-color: #f8f9fb;
+            line-height: 1.8;
+        }
+
+        .message p {
+            margin: 5px 0;
+        }
+
+        .button-area {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 16px;
+            transition: 0.2s;
+        }
+
+        .btn-primary {
+            background-color: #333;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #555;
+        }
+
+        .btn-secondary {
+            background-color: #e9ecef;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background-color: #dfe3e7;
+        }
+
+        @media (max-width: 600px) {
+
+            .container {
+                width: 94%;
+                margin: 30px auto;
+            }
+
+            .result-card {
+                padding: 25px 20px;
+            }
+
+            .detail-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 6px;
+            }
+
+            .detail-value {
+                text-align: left;
+            }
+
+            .button-area {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="result-card">
+
+
+        <!-- ========================= -->
+        <!-- 付款成功 -->
+        <!-- ========================= -->
+
+        <div class="result-header"
+             th:if="${isSuccess}">
+
+            <div class="result-icon">
+                ✓
+            </div>
+
+            <h1>
+                付款成功
+            </h1>
+
+            <p>
+                您的訂單已完成付款
+            </p>
+
+        </div>
+
+
+        <!-- ========================= -->
+        <!-- 付款過期 -->
+        <!-- ========================= -->
+
+        <div class="result-header"
+             th:if="${isExpired}">
+
+            <div class="result-icon">
+                !
+            </div>
+
+            <h1>
+                付款時間過期
+            </h1>
+
+            <p>
+                此筆訂單已失效
+            </p>
+
+        </div>
+
+
+        <!-- ========================= -->
+        <!-- 付款失敗 -->
+        <!-- ========================= -->
+
+        <div class="result-header"
+             th:if="${!isExpired and !isSuccess}">
+
+            <div class="result-icon">
+                ×
+            </div>
+
+            <h1>
+                付款失敗
+            </h1>
+
+            <p>
+                本次付款未能完成
+            </p>
+
+        </div>
+
+
+        <!-- ========================= -->
+        <!-- 付款資料 -->
+        <!-- ========================= -->
+
+        <div class="detail-section">
+
+            <h2 class="detail-title">
+                付款資訊
+            </h2>
+
+
+            <div class="detail-card">
+
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        訂單編號
+                    </span>
+
+                    <span class="detail-value"
+                          th:text="${payments.orders.order_id}">
+                        100
+                    </span>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        付款方式
+                    </span>
+
+                    <span class="detail-value"
+                          th:text="${payments.payment_method}">
+                        CREDIT_CARD
+                    </span>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        付款金額
+                    </span>
+
+                    <span class="detail-value amount">
+
+                        <span th:text="${payments.amount}">
+                            50000
+                        </span>
+
+                        元
+
+                    </span>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        付款狀態
+                    </span>
+
+                    <span class="detail-value"
+                          th:text="${payments.payment_status}">
+                        PENDING
+                    </span>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        付款開始時間
+                    </span>
+
+                    <span class="detail-value"
+                          th:text="${payments.start_at}">
+                        2026-08-21T11:30:00
+                    </span>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+        <!-- ========================= -->
+        <!-- 過期訊息 -->
+        <!-- ========================= -->
+
+        <div class="message"
+             th:if="${isExpired}">
+
+            <p>
+                付款時間已超過 30 秒，此筆訂單已失效。
+            </p>
+
+            <p>
+                原先保留的機位已釋放。
+            </p>
+
+            <p>
+                如需購買此行程，請重新選擇行程並下單。
+            </p>
+
+        </div>
+
+
+        <!-- ========================= -->
+        <!-- 成功訊息 -->
+        <!-- ========================= -->
+
+        <div class="message"
+             th:if="${isSuccess}">
+
+            <p>
+                付款成功！
+            </p>
+
+            <p>
+                感謝您的訂購，您的行程訂單已確認。
+            </p>
+
+        </div>
+
+
+        <!-- ========================= -->
+        <!-- 失敗訊息 -->
+        <!-- ========================= -->
+
+        <div class="message"
+             th:if="${!isExpired and !isSuccess}">
+
+            <p>
+                付款失敗。
+            </p>
+
+            <p>
+                請重新確認訂單或重新進行購買。
+            </p>
+
+        </div>
+
+
+        <!-- ========================= -->
+        <!-- 操作按鈕 -->
+        <!-- ========================= -->
+
+        <div class="button-area">
+
+            <a class="btn btn-primary"
+               th:href="@{/web/frontproducts}">
+                回到商品首頁
+            </a>
+
+            <a class="btn btn-secondary"
+               th:href="@{/web/member}">
+                返回會員專區
+            </a>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+</body>
+
+</html>
+```

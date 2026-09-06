@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>訂單列表</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+            font-family: "Microsoft JhengHei", "Noto Sans TC", Arial, sans-serif;
+            color: #3f463d;
+        }
+
+        body {
+            min-height: 100vh;
+
+            background-image:
+                linear-gradient(
+                    rgba(24,48,35,0.35),
+                    rgba(24,48,35,0.35)
+                ),
+                url('/images/europe2.jpg');
+
+            background-size: cover;
+
+            background-position: center;
+
+            background-attachment: fixed;
+
+            background-repeat: no-repeat;
+        }
+
+        .container {
+            width: 94%;
+            max-width: 1350px;
+
+            margin: 40px auto;
+
+            padding: 35px 40px 45px;
+
+            background: rgba(248,247,238,0.90);
+
+            border-radius: 30px;
+
+            border: 1px solid rgba(255,255,255,0.75);
+
+            box-shadow:
+                0 15px 45px rgba(0,0,0,0.25),
+                inset 0 1px 0 rgba(255,255,255,0.8);
+
+            backdrop-filter: blur(5px);
+        }
+
+        h1 {
+            margin: 0 0 25px;
+
+            text-align: center;
+
+            color: #28533d;
+
+            font-size: 34px;
+
+            letter-spacing: 5px;
+        }
+
+        h1::before {
+            content: "📋";
+
+            margin-right: 12px;
+        }
+
+        .alert {
+            padding: 14px 20px;
+
+            margin: 15px 0 22px;
+
+            border-radius: 14px;
+
+            text-align: center;
+
+            font-weight: bold;
+        }
+
+        .alert-success {
+            background: rgba(218,239,221,0.90);
+
+            color: #28613d;
+
+            border: 1px solid #a8c9af;
+        }
+
+        .summary {
+            margin-bottom: 18px;
+
+            font-size: 17px;
+
+            color: #65685d;
+        }
+
+        .summary span {
+            color: #c79532;
+
+            font-size: 22px;
+
+            font-weight: bold;
+        }
+
+        .btn {
+            display: inline-block;
+
+            padding: 9px 17px;
+
+            margin: 3px;
+
+            border: none;
+
+            border-radius: 20px;
+
+            text-decoration: none;
+
+            cursor: pointer;
+
+            font-family: inherit;
+
+            transition: 0.25s;
+
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+
+            box-shadow: 0 6px 12px rgba(0,0,0,0.20);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg,#4d8b70,#2e6650);
+
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg,#d8aa45,#bd8423);
+
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg,#c96b67,#a84743);
+
+            color: white;
+        }
+
+        .btn-create {
+            display: inline-block;
+
+            margin-bottom: 25px;
+
+            padding: 12px 24px;
+
+            border-radius: 24px;
+
+            background: linear-gradient(135deg,#dcb65b,#c58c29);
+
+            color: white;
+
+            text-decoration: none;
+
+            font-weight: bold;
+        }
+
+        .table-wrapper {
+            width: 100%;
+
+            overflow-x: auto;
+
+            border-radius: 20px;
+
+            box-shadow: 0 5px 18px rgba(0,0,0,0.10);
+        }
+
+        table {
+            border-collapse: separate;
+
+            border-spacing: 0;
+
+            width: 100%;
+
+            min-width: 1000px;
+
+            background: rgba(255,255,255,0.72);
+        }
+
+        th {
+            padding: 15px 12px;
+
+            background: linear-gradient(
+                135deg,
+                #376b52,
+                #28533d
+            );
+
+            color: white;
+
+            text-align: center;
+
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 13px 12px;
+
+            text-align: center;
+
+            border-bottom: 1px solid rgba(120,120,120,0.15);
+
+            white-space: nowrap;
+        }
+
+        tbody tr {
+            transition: 0.2s;
+        }
+
+        tbody tr:hover {
+            background: rgba(226,237,224,0.80);
+        }
+
+        .order-status {
+            display: inline-block;
+
+            padding: 6px 13px;
+
+            border-radius: 18px;
+
+            background: rgba(77,139,112,0.15);
+
+            color: #376b52;
+
+            font-weight: bold;
+        }
+
+        .amount {
+            color: #b07b1f;
+
+            font-weight: bold;
+
+            font-size: 16px;
+        }
+
+        .action-cell {
+            min-width: 210px;
+
+            white-space: normal;
+        }
+
+        .action-cell form {
+            display: inline-block;
+        }
+
+        .bottom-nav {
+            margin-top: 30px;
+
+            text-align: center;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>訂單列表</h1>
+
+    <!-- 成功訊息 -->
+
+    <div th:if="${successMessage}"
+         class="alert alert-success"
+         th:text="${successMessage}">
+
+        成功訊息
+
+    </div>
+
+    <!-- 統計資訊 -->
+
+    <div class="summary">
+
+        共
+        <span th:text="${ordersCount}">0</span>
+        項訂單
+
+    </div>
+
+    <!-- 建立訂單 -->
+
+    <a th:href="@{/web/orders/create/1}"
+       class="btn-create">
+
+        ＋ 建立新訂單
+
+    </a>
+
+    <!-- 訂單表格 -->
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+
+            <tr>
+
+                <th>訂單ID</th>
+
+                <th>訂單總金額</th>
+
+                <th>訂單狀態</th>
+
+                <th>預約人數</th>
+
+                <th>付款期限</th>
+
+                <th>創建時間</th>
+
+                <th>更新時間</th>
+
+                <th>操作</th>
+
+            </tr>
+
+            </thead>
+
+            <tbody>
+
+            <tr th:each="orders : ${orders}">
+
+                <td th:text="${orders.order_id}">
+                    訂單ID
+                </td>
+
+                <td class="amount"
+                    th:text="${orders.total_amount}">
+                    訂單總金額
+                </td>
+
+                <td>
+
+                    <span class="order-status"
+                          th:text="${orders.order_status}">
+                        訂單狀態
+                    </span>
+
+                </td>
+
+                <td th:text="${orders.reserved_quantity}">
+                    預約人數
+                </td>
+
+                <td th:text="${orders.payment_expires_at}">
+                    付款期限
+                </td>
+
+                <td th:text="${orders.created_at}">
+                    創建時間
+                </td>
+
+                <td th:text="${orders.updated_at}">
+                    更新時間
+                </td>
+
+                <td class="action-cell">
+
+                    <a th:href="@{/web/orders/{order_id}(order_id=${orders.order_id})}"
+                       class="btn btn-primary">
+
+                        訂單詳情
+
+                    </a>
+
+                    <a th:href="@{/web/order_item/detail/{order_id}(order_id=${orders.order_id})}"
+                       class="btn btn-success">
+
+                        訂單明細詳情
+
+                    </a>
+
+                    <a th:href="@{/web/order_travelers/order/{order_id}(order_id=${orders.order_id})}"
+                       class="btn btn-primary">
+
+                        查看旅客
+
+                    </a>
+
+                    <form th:action="@{/web/orders/{order_id}/delete(order_id=${orders.order_id})}"
+                          method="post">
+
+                        <button type="submit"
+                                class="btn btn-danger"
+                                onclick="return confirm('確定要刪除嗎？')">
+
+                            刪除
+
+                        </button>
+
+                    </form>
+
+                </td>
+
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <div class="bottom-nav">
+
+        <a th:href="@{/web/dashboard}"
+           class="btn btn-primary">
+
+            ← 返回管理者後台
+
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>我的訂單 | 探索世界</title>
+
+
+    <!-- Google Fonts -->
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@500;600;700&display=swap"
+        rel="stylesheet">
+
+
+    <!-- Material Icons -->
+
+    <link
+        href="https://fonts.googleapis.com/icon?family=Material+Icons+Round"
+        rel="stylesheet">
+
+
+    <style>
+
+
+        /* =====================================================
+           全域設定
+        ===================================================== */
+
+        :root {
+
+            --forest-dark: #274b3c;
+
+            --forest: #39705a;
+
+            --forest-light: #6e9a82;
+
+            --cream: rgba(247, 245, 233, 0.92);
+
+            --cream-light: rgba(255, 255, 250, 0.70);
+
+            --text-main: #3c403c;
+
+            --text-secondary: #777a73;
+
+            --border: rgba(100, 105, 92, 0.20);
+
+            --price: #c6283d;
+
+            --price-dark: #a91f32;
+
+            --success: #237c5a;
+
+            --success-bg: #e2f1e8;
+
+            --warning: #b47720;
+
+            --warning-bg: #fff1d6;
+
+            --danger: #b72c3b;
+
+            --danger-bg: #f9e3e6;
+
+            --shadow:
+                0 15px 45px rgba(28, 48, 37, 0.20);
+        }
+
+
+        * {
+
+            box-sizing: border-box;
+
+            margin: 0;
+
+            padding: 0;
+        }
+
+
+        body {
+
+            font-family:
+                'Noto Sans TC',
+                sans-serif;
+
+            color: var(--text-main);
+
+            min-height: 100vh;
+
+            background-color: #314c3e;
+        }
+
+
+        /* =====================================================
+           整個頁面背景
+           
+           你之後只需要把這張圖片放到：
+           
+           src/main/resources/static/images/orders-bg.jpg
+           
+           就可以。
+        ===================================================== */
+
+        .page {
+
+            min-height: 100vh;
+
+            position: relative;
+
+            padding: 35px 25px 45px;
+
+            background-image:
+
+                linear-gradient(
+                    rgba(24, 48, 37, 0.38),
+                    rgba(24, 48, 37, 0.38)
+                ),
+
+                url('/images/china2.jpg');
+
+            background-size: cover;
+
+            background-position: center;
+
+            background-attachment: fixed;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+        }
+
+
+        /* =====================================================
+           中央內容區
+        ===================================================== */
+
+        .main-container {
+
+            width: 100%;
+
+            max-width: 1250px;
+
+            position: relative;
+
+            z-index: 2;
+        }
+
+
+        /* =====================================================
+           主標題
+        ===================================================== */
+
+        .page-header {
+
+            text-align: center;
+
+            color: white;
+
+            margin-bottom: 22px;
+        }
+
+
+        .brand-title {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 14px;
+
+            margin-bottom: 5px;
+        }
+
+
+        .brand-icon {
+
+            font-size: 43px;
+
+            filter:
+                drop-shadow(
+                    0 2px 5px rgba(0, 0, 0, 0.25)
+                );
+        }
+
+
+        .brand-title h1 {
+
+            font-family:
+                'Noto Serif TC',
+                serif;
+
+            font-size: 42px;
+
+            font-weight: 700;
+
+            letter-spacing: 8px;
+
+            text-shadow:
+                0 2px 8px rgba(0, 0, 0, 0.30);
+        }
+
+
+        .english-title {
+
+            font-size: 16px;
+
+            letter-spacing: 3px;
+
+            opacity: 0.88;
+
+            margin-left: 10px;
+        }
+
+
+        /* 標題下方裝飾線 */
+
+        .title-decoration {
+
+            width: 70px;
+
+            height: 3px;
+
+            margin: 13px auto 0;
+
+            background: rgba(255,255,255,0.85);
+
+            border-radius: 5px;
+
+            box-shadow:
+                0 1px 5px rgba(0,0,0,0.15);
+        }
+
+
+        /* =====================================================
+           中央半透明面板
+        ===================================================== */
+
+        .content-panel {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(250, 249, 239, 0.94),
+                    rgba(242, 241, 225, 0.88)
+                );
+
+            border-radius: 28px;
+
+            padding: 30px 34px 25px;
+
+            border: 1px solid rgba(255,255,255,0.65);
+
+            box-shadow: var(--shadow);
+
+            backdrop-filter: blur(7px);
+
+            -webkit-backdrop-filter: blur(7px);
+        }
+
+
+        /* =====================================================
+           上方資訊列
+        ===================================================== */
+
+        .summary-row {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 22px;
+
+            padding: 0 5px;
+        }
+
+
+        .summary-title {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            font-family:
+                'Noto Serif TC',
+                serif;
+
+            font-size: 25px;
+
+            font-weight: 600;
+
+            color: var(--forest-dark);
+        }
+
+
+        .summary-title .material-icons-round {
+
+            font-size: 27px;
+
+            color: var(--forest);
+        }
+
+
+        .order-count {
+
+            color: var(--text-secondary);
+
+            font-size: 16px;
+
+            font-weight: 500;
+        }
+
+
+        .order-count-number {
+
+            color: var(--price);
+
+            font-size: 24px;
+
+            font-weight: 600;
+
+            margin: 0 4px;
+        }
+
+
+        /* =====================================================
+           成功訊息
+        ===================================================== */
+
+        .alert {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            padding: 12px 18px;
+
+            margin-bottom: 20px;
+
+            border-radius: 10px;
+
+            font-size: 15px;
+
+            font-weight: 500;
+        }
+
+
+        .alert-success {
+
+            color: #176345;
+
+            background: rgba(221, 242, 230, 0.92);
+
+            border:
+                1px solid rgba(52, 140, 101, 0.25);
+        }
+
+
+        .alert-success .material-icons-round {
+
+            color: var(--success);
+
+            font-size: 22px;
+        }
+
+
+        /* =====================================================
+           訂單表格外框
+        ===================================================== */
+
+        .table-wrapper {
+
+            width: 100%;
+
+            overflow-x: auto;
+
+            border-radius: 15px;
+
+            border:
+                1px solid rgba(91, 97, 85, 0.18);
+
+            background:
+                rgba(255,255,255,0.42);
+        }
+
+
+        /* =====================================================
+           表格
+        ===================================================== */
+
+        .orders-table {
+
+            width: 100%;
+
+            min-width: 950px;
+
+            border-collapse: collapse;
+        }
+
+
+        /* =====================================================
+           表頭
+        ===================================================== */
+
+        .orders-table thead {
+
+            background:
+                rgba(58, 94, 76, 0.88);
+
+            color: white;
+        }
+
+
+        .orders-table th {
+
+            padding: 15px 13px;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            text-align: center;
+
+            letter-spacing: 1px;
+
+            white-space: nowrap;
+        }
+
+
+        .orders-table th:first-child {
+
+            border-radius: 14px 0 0 0;
+        }
+
+
+        .orders-table th:last-child {
+
+            border-radius: 0 14px 0 0;
+        }
+
+
+        /* =====================================================
+           表格內容
+        ===================================================== */
+
+        .orders-table tbody tr {
+
+            transition:
+                background-color 0.2s ease;
+        }
+
+
+        .orders-table tbody tr:nth-child(even) {
+
+            background:
+                rgba(255,255,255,0.38);
+        }
+
+
+        .orders-table tbody tr:hover {
+
+            background:
+                rgba(255,255,255,0.75);
+        }
+
+
+        .orders-table td {
+
+            padding: 16px 12px;
+
+            text-align: center;
+
+            font-size: 14px;
+
+            border-bottom:
+                1px solid var(--border);
+
+            white-space: nowrap;
+        }
+
+
+        .orders-table tbody tr:last-child td {
+
+            border-bottom: none;
+        }
+
+
+        /* =====================================================
+           訂單 ID
+        ===================================================== */
+
+        .order-id {
+
+            color: var(--forest-dark);
+
+            font-weight: 700;
+
+            font-size: 15px;
+        }
+
+
+        /* =====================================================
+           金額
+        ===================================================== */
+
+        .order-price {
+
+            color: var(--price);
+
+            font-size: 18px;
+
+            font-weight: 600;
+        }
+
+
+        .order-price::before {
+
+            content: '$';
+
+            font-size: 13px;
+
+            margin-right: 2px;
+        }
+
+
+        /* =====================================================
+           訂單狀態
+        ===================================================== */
+
+        .status {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 5px;
+
+            padding: 5px 12px;
+
+            border-radius: 20px;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            min-width: 72px;
+        }
+
+
+        .status .material-icons-round {
+
+            font-size: 15px;
+        }
+
+
+        /* 已付款 */
+
+        .status-paid {
+
+            color: var(--success);
+
+            background: var(--success-bg);
+
+            border:
+                1px solid rgba(35,124,90,0.18);
+        }
+
+
+        /* 未付款 */
+
+        .status-unpaid {
+
+            color: var(--warning);
+
+            background: var(--warning-bg);
+
+            border:
+                1px solid rgba(180,119,32,0.18);
+        }
+
+
+        /* 取消 */
+
+        .status-cancelled {
+
+            color: var(--danger);
+
+            background: var(--danger-bg);
+
+            border:
+                1px solid rgba(183,44,59,0.18);
+        }
+
+
+        /* 完成 */
+
+        .status-completed {
+
+            color: #376f9c;
+
+            background: #e3eef7;
+
+            border:
+                1px solid rgba(55,111,156,0.18);
+        }
+
+
+        /* 其他狀態 */
+
+        .status-default {
+
+            color: #666;
+
+            background: #eeeeea;
+
+            border:
+                1px solid rgba(100,100,90,0.15);
+        }
+
+
+        /* =====================================================
+           日期時間
+        ===================================================== */
+
+        .datetime {
+
+            color: #62675f;
+
+            font-size: 13px;
+
+            line-height: 1.5;
+        }
+
+
+        /* =====================================================
+           預約人數
+        ===================================================== */
+
+        .quantity {
+
+            font-size: 15px;
+
+            font-weight: 600;
+
+            color: var(--forest-dark);
+        }
+
+
+        /* =====================================================
+           沒有訂單
+        ===================================================== */
+
+        .empty-order {
+
+            text-align: center;
+
+            padding: 60px 20px;
+
+            color: var(--text-secondary);
+        }
+
+
+        .empty-order .material-icons-round {
+
+            display: block;
+
+            font-size: 58px;
+
+            color: #9baa9f;
+
+            margin-bottom: 12px;
+        }
+
+
+        .empty-order-title {
+
+            font-family:
+                'Noto Serif TC',
+                serif;
+
+            font-size: 22px;
+
+            color: var(--forest-dark);
+
+            margin-bottom: 5px;
+        }
+
+
+        .empty-order-text {
+
+            font-size: 14px;
+        }
+
+
+        /* =====================================================
+           底部按鈕區
+        ===================================================== */
+
+        .bottom-actions {
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            gap: 15px;
+
+            margin-top: 25px;
+
+            padding-top: 22px;
+
+            border-top:
+                1px solid rgba(95,100,90,0.20);
+        }
+
+
+        /* =====================================================
+           通用按鈕
+        ===================================================== */
+
+        .btn {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 8px;
+
+            min-width: 190px;
+
+            padding: 11px 25px;
+
+            border-radius: 25px;
+
+            text-decoration: none;
+
+            font-size: 15px;
+
+            font-weight: 600;
+
+            transition:
+                all 0.2s ease;
+        }
+
+
+        .btn .material-icons-round {
+
+            font-size: 20px;
+        }
+
+
+        /* 返回會員專區 */
+
+        .btn-member {
+
+            color: white;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #39765d,
+                    #285a45
+                );
+
+            border:
+                1px solid rgba(255,255,255,0.30);
+
+            box-shadow:
+                0 4px 10px rgba(39,75,60,0.18);
+        }
+
+
+        .btn-member:hover {
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 7px 15px rgba(39,75,60,0.25);
+        }
+
+
+        /* 商品首頁 */
+
+        .btn-home {
+
+            color: var(--forest-dark);
+
+            background:
+                rgba(255,255,255,0.72);
+
+            border:
+                1px solid rgba(65,95,78,0.30);
+        }
+
+
+        .btn-home:hover {
+
+            background: white;
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 5px 12px rgba(50,70,58,0.13);
+        }
+
+
+        /* =====================================================
+           底部小標語
+        ===================================================== */
+
+        .footer-slogan {
+
+            text-align: center;
+
+            color: white;
+
+            margin-top: 18px;
+
+            font-family:
+                'Noto Serif TC',
+                serif;
+
+            font-size: 15px;
+
+            letter-spacing: 3px;
+
+            text-shadow:
+                0 1px 5px rgba(0,0,0,0.30);
+
+            opacity: 0.92;
+        }
+
+
+        .footer-slogan span {
+
+            margin: 0 10px;
+
+            opacity: 0.75;
+        }
+
+
+        /* =====================================================
+           平板
+        ===================================================== */
+
+        @media (max-width: 900px) {
+
+            .page {
+
+                padding: 25px 15px 35px;
+
+                align-items: flex-start;
+            }
+
+
+            .content-panel {
+
+                padding: 25px 20px 22px;
+
+                border-radius: 22px;
+            }
+
+
+            .brand-title h1 {
+
+                font-size: 34px;
+
+                letter-spacing: 5px;
+            }
+
+
+            .english-title {
+
+                font-size: 14px;
+            }
+
+
+            .summary-row {
+
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                gap: 6px;
+            }
+
+
+            .bottom-actions {
+
+                flex-direction: column;
+            }
+
+
+            .btn {
+
+                width: 100%;
+
+                max-width: 350px;
+            }
+        }
+
+
+        /* =====================================================
+           手機
+        ===================================================== */
+
+        @media (max-width: 600px) {
+
+            .page {
+
+                padding: 18px 10px 30px;
+
+                background-attachment: scroll;
+            }
+
+
+            .brand-title {
+
+                gap: 8px;
+            }
+
+
+            .brand-icon {
+
+                font-size: 32px;
+            }
+
+
+            .brand-title h1 {
+
+                font-size: 27px;
+
+                letter-spacing: 3px;
+            }
+
+
+            .english-title {
+
+                display: block;
+
+                margin: 3px 0 0;
+
+                font-size: 12px;
+
+                letter-spacing: 2px;
+            }
+
+
+            .content-panel {
+
+                padding: 20px 12px 18px;
+
+                border-radius: 18px;
+            }
+
+
+            .summary-title {
+
+                font-size: 21px;
+            }
+
+
+            .order-count {
+
+                font-size: 14px;
+            }
+
+
+            .orders-table th {
+
+                padding: 12px 10px;
+
+                font-size: 13px;
+            }
+
+
+            .orders-table td {
+
+                padding: 13px 10px;
+
+                font-size: 13px;
+            }
+
+
+            .footer-slogan {
+
+                font-size: 12px;
+
+                letter-spacing: 2px;
+            }
+        }
+
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="page">
+
+
+    <div class="main-container">
+
+
+        <!-- =================================================
+             頁面標題
+        ================================================== -->
+
+        <header class="page-header">
+
+            <div class="brand-title">
+
+                <span class="material-icons-round brand-icon">
+                    explore
+                </span>
+
+                <h1>
+                    我的訂單
+                </h1>
+
+                <span class="english-title">
+                    My Orders
+                </span>
+
+            </div>
+
+
+            <div class="title-decoration"></div>
+
+        </header>
+
+
+
+        <!-- =================================================
+             中央內容面板
+        ================================================== -->
+
+        <section class="content-panel">
+
+
+            <!-- =================================================
+                 成功訊息
+            ================================================== -->
+
+            <div
+                th:if="${successMessage}"
+                class="alert alert-success"
+            >
+
+                <span class="material-icons-round">
+                    check_circle
+                </span>
+
+                <span th:text="${successMessage}">
+                    成功訊息
+                </span>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 訂單摘要
+            ================================================== -->
+
+            <div class="summary-row">
+
+
+                <div class="summary-title">
+
+                    <span class="material-icons-round">
+                        receipt_long
+                    </span>
+
+                    <span>
+                        訂單紀錄
+                    </span>
+
+                </div>
+
+
+                <div class="order-count">
+
+                    共
+
+                    <span
+                        class="order-count-number"
+                        th:text="${ordersCount}"
+                    >
+                        0
+                    </span>
+
+                    項訂單
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 訂單表格
+            ================================================== -->
+
+            <div class="table-wrapper">
+
+
+                <table class="orders-table">
+
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                訂單編號
+                            </th>
+
+                            <th>
+                                訂單總金額
+                            </th>
+
+                            <th>
+                                訂單狀態
+                            </th>
+
+                            <th>
+                                預約人數
+                            </th>
+
+                            <th>
+                                付款期限
+                            </th>
+
+                            <th>
+                                創建時間
+                            </th>
+
+                            <th>
+                                更新時間
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+
+                    <tbody>
+
+
+                        <!-- =================================================
+                             每一筆訂單
+                        ================================================== -->
+
+                        <tr
+                            th:each="orders : ${orders}"
+                        >
+
+
+                            <!-- 訂單 ID -->
+
+                            <td>
+
+                                <span
+                                    class="order-id"
+                                    th:text="'#' + ${orders.order_id}"
+                                >
+                                    #10001
+                                </span>
+
+                            </td>
+
+
+
+                            <!-- 訂單金額 -->
+
+                            <td>
+
+                                <span
+                                    class="order-price"
+                                    th:text="${orders.total_amount}"
+                                >
+                                    5000
+                                </span>
+
+                            </td>
+
+
+
+                            <!-- =================================================
+                                 訂單狀態
+                                 
+                                 這裡根據 order_status 顯示不同樣式
+                            ================================================== -->
+
+                            <td>
+
+
+                                <!-- PAID -->
+
+                                <span
+                                    th:if="${orders.order_status == 'PAID'}"
+                                    class="status status-paid"
+                                >
+
+                                    <span class="material-icons-round">
+                                        check_circle
+                                    </span>
+
+                                    已付款
+
+                                </span>
+
+
+
+                                <!-- UNPAID -->
+
+                                <span
+                                    th:if="${orders.order_status == 'UNPAID'}"
+                                    class="status status-unpaid"
+                                >
+
+                                    <span class="material-icons-round">
+                                        schedule
+                                    </span>
+
+                                    待付款
+
+                                </span>
+
+
+
+                                <!-- CANCELLED -->
+
+                                <span
+                                    th:if="${orders.order_status == 'CANCELLED'}"
+                                    class="status status-cancelled"
+                                >
+
+                                    <span class="material-icons-round">
+                                        cancel
+                                    </span>
+
+                                    已取消
+
+                                </span>
+
+
+
+                                <!-- COMPLETED -->
+
+                                <span
+                                    th:if="${orders.order_status == 'COMPLETED'}"
+                                    class="status status-completed"
+                                >
+
+                                    <span class="material-icons-round">
+                                        done_all
+                                    </span>
+
+                                    已完成
+
+                                </span>
+
+
+
+                                <!-- 其他狀態 -->
+
+                                <span
+                                    th:if="${orders.order_status != 'PAID'
+                                           and orders.order_status != 'UNPAID'
+                                           and orders.order_status != 'CANCELLED'
+                                           and orders.order_status != 'COMPLETED'}"
+                                    class="status status-default"
+                                    th:text="${orders.order_status}"
+                                >
+                                    其他狀態
+                                </span>
+
+
+                            </td>
+
+
+
+                            <!-- 預約人數 -->
+
+                            <td>
+
+                                <span
+                                    class="quantity"
+                                    th:text="${orders.reserved_quantity}"
+                                >
+                                    2
+                                </span>
+
+                                人
+
+                            </td>
+
+
+
+                            <!-- 付款期限 -->
+
+                            <td>
+
+                                <span
+                                    class="datetime"
+                                    th:text="${orders.payment_expires_at != null
+                                             ? #temporals.format(orders.payment_expires_at, 'yyyy-MM-dd HH:mm:ss')
+                                             : '—'}"
+                                >
+                                    2026-09-02 15:30:00
+                                </span>
+
+                            </td>
+
+
+
+                            <!-- 創建時間 -->
+
+                            <td>
+
+                                <span
+                                    class="datetime"
+                                    th:text="${orders.created_at != null
+                                             ? #temporals.format(orders.created_at, 'yyyy-MM-dd HH:mm:ss')
+                                             : '—'}"
+                                >
+                                    2026-09-02 15:00:00
+                                </span>
+
+                            </td>
+
+
+
+                            <!-- 更新時間 -->
+
+                            <td>
+
+                                <span
+                                    class="datetime"
+                                    th:text="${orders.updated_at != null
+                                             ? #temporals.format(orders.updated_at, 'yyyy-MM-dd HH:mm:ss')
+                                             : '—'}"
+                                >
+                                    2026-09-02 15:10:00
+                                </span>
+
+                            </td>
+
+
+                        </tr>
+
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 底部按鈕
+            ================================================== -->
+
+            <div class="bottom-actions">
+
+
+                <!-- 返回會員專區 -->
+
+                <a
+                    th:href="@{/web/member}"
+                    class="btn btn-member"
+                >
+
+                    <span class="material-icons-round">
+                        person
+                    </span>
+
+                    返回會員專區
+
+                </a>
+
+
+
+                <!-- 返回商品首頁 -->
+
+                <a
+                    th:href="@{/web/frontproducts}"
+                    class="btn btn-home"
+                >
+
+                    <span class="material-icons-round">
+                        explore
+                    </span>
+
+                    探索更多行程
+
+                </a>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             底部標語
+        ================================================== -->
+
+        <div class="footer-slogan">
+
+            探索世界
+
+            <span>•</span>
+
+            開啟您的專屬旅程
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+</body>
+
+</html>
