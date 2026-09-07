@@ -54,18 +54,12 @@ public class PaymentService {
                 .orElseThrow(() ->
                     new RuntimeException("找不到訂單：" + order_id));
     }
-  
-    // 代表「使用者按下確認付款」。
+
     public Payments startPayment(Integer order_id) {
 
         Orders order = ordersRepository.findById(order_id)
                 .orElseThrow(() ->
                     new RuntimeException("找不到訂單：" + order_id));
-
-        // ==========================================
-        // 1. 如果已經有 PENDING payment
-        //    就直接使用原本那一筆
-        // ==========================================
 
         Optional<Payments> existingPayment =
                 paymentsRepository.findPendingPayment(
@@ -76,22 +70,14 @@ public class PaymentService {
         if (existingPayment.isPresent()) {
 
             Payments payment = existingPayment.get();
-
-            // 如果付款期限還沒到
             if (order.getPayment_expires_at() != null
                     && LocalDateTime.now()
                         .isBefore(order.getPayment_expires_at())) {
 
                 return payment;
             }
-
-            // 如果已經超過付款期限
             return expirePayment(payment.getPayment_id());
         }
-
-        // ==========================================
-        // 2. 第一次進入 checkout
-        // ==========================================
 
         LocalDateTime startAt = LocalDateTime.now();
 
@@ -101,8 +87,6 @@ public class PaymentService {
         payment.setPayment_status("PENDING");
         payment.setAmount(order.getTotal_amount());
         payment.setStart_at(startAt);
-
-        // start_at + 30秒
         order.setPayment_expires_at(
                 startAt.plusSeconds(30)
         );
@@ -123,33 +107,13 @@ public class PaymentService {
                 );
 
         Orders order = payment.getOrders();
-
-
-        // ==========================================
-        // 1. 如果已經付款成功
-        //    絕對不能釋放機位
-        // ==========================================
-
         if ("SUCCESS".equals(payment.getPayment_status())) {
             return payment;
         }
 
-
-        // ==========================================
-        // 2. 如果已經 EXPIRED
-        //    代表之前已經釋放過機位
-        //    不能再次 + reserved_quantity
-        // ==========================================
-
         if ("EXPIRED".equals(payment.getPayment_status())) {
             return payment;
         }
-
-
-        // ==========================================
-        // 3. 找這張訂單唯一的 Order_item
-        // ==========================================
-
         Order_item orderItem =
                 orderItemRepository
                     .findByOrdersOrderId(order.getOrder_id())
@@ -160,11 +124,6 @@ public class PaymentService {
                         )
                     );
 
-
-        // ==========================================
-        // 4. 取得這張訂單占用的機位數
-        // ==========================================
-
         Integer reservedQuantity =
                 order.getReserved_quantity();
 
@@ -172,11 +131,6 @@ public class PaymentService {
         if (reservedQuantity == null) {
             reservedQuantity = 0;
         }
-
-
-        // ==========================================
-        // 5. 找商品
-        // ==========================================
 
         Products product =
                 orderItem.getProducts();
@@ -187,29 +141,13 @@ public class PaymentService {
                 "訂單明細沒有對應的商品"
             );
         }
-
-
-        // ==========================================
-        // 6. ★★★ 釋放機位 ★★★
-        // ==========================================
-
         product.setAvailable_capacity(
                 product.getAvailable_capacity()
                         + reservedQuantity
         );
 
-
-        // ==========================================
-        // 7. 更新付款與訂單狀態
-        // ==========================================
-
         payment.setPayment_status("EXPIRED");
         order.setOrder_status("UNPAID");
-
-
-        // ==========================================
-        // 8. 儲存
-        // ==========================================
 
         productRepository.save(product);
         ordersRepository.save(order);
@@ -233,11 +171,6 @@ public class PaymentService {
 
         LocalDateTime now = LocalDateTime.now();
 
-
-        // ==========================================
-        // 1. 檢查付款期限
-        // ==========================================
-
         if (order.getPayment_expires_at() == null) {
 
             throw new RuntimeException(
@@ -245,21 +178,10 @@ public class PaymentService {
             );
         }
 
-
-        // ==========================================
-        // 2. 已經超過 30 秒
-        // ==========================================
-
         if (!now.isBefore(order.getPayment_expires_at())) {
 
             return expirePayment(payment_id);
         }
-
-
-        // ==========================================
-        // 3. 付款成功
-        // ==========================================
-
         payment.setPayment_method(payment_method);
         payment.setPayment_status("SUCCESS");
         payment.setPaid_at(now);
@@ -288,12 +210,9 @@ public class PaymentService {
 
         if (existingPayments.isPresent()) {
         		Payments payments = existingPayments.get();
-
-            // 根據傳入的 order_id 尋找訂單物件
             Orders orders = ordersRepository.findById(order_id)
                     .orElseThrow(() -> new RuntimeException("找不到對應的訂單 ID: " + order_id));
 
-            //payments.setPayment_id(payment_id);
             payments.setOrders(orders); 
             payments.setPayment_method(payment_method);
             payments.setPayment_status(payment_status);
