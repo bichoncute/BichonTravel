@@ -41,32 +41,25 @@ public class Cart_items {
 	private Integer cart_item_id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)  
-    @JoinColumn(name = "user_id", nullable = false)        // 資料庫中的外鍵欄位名稱
+    @JoinColumn(name = "user_id", nullable = false)        
     @JsonIgnoreProperties("cart_items")
 	private Users users;
 	
-	//@Column(name = "user_id", nullable = false)
-	//private Integer user_id;
-	
 	@ManyToOne(fetch = FetchType.LAZY) 
-    @JoinColumn(name = "product_id", nullable = false)        // 資料庫中的外鍵欄位名稱
+    @JoinColumn(name = "product_id", nullable = false)        
     @JsonIgnoreProperties("cart_items")
 	private Products products;
-	//@Column(name = "product_id", nullable = false)
-	//private Integer product_id;
 	@Column(name = "created_at", updatable = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime created_at;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updated_at;
- // 新增資料之前執行
     @PrePersist
     protected void onCreate() {
         LocalDateTime now = LocalDateTime.now();
         this.created_at = now;
         this.updated_at = now;
     }
-    // 更新資料之前執行
     @PreUpdate
     protected void onUpdate() {
         this.updated_at = LocalDateTime.now();
