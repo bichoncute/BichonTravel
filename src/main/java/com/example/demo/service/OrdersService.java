@@ -25,9 +25,7 @@ public class OrdersService {
 
         Orders orders = new Orders();
         orders.setUsers(users);
-     // 新訂單剛建立時，總金額先從 0 開始
         orders.setTotal_amount(BigDecimal.ZERO);
-        //orders.setTotal_amount(total_amount);
         orders.setOrder_status(order_status);
         orders.setReserved_quantity(reserved_quantity);
 
