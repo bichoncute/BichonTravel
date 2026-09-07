@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>sbrest0810_jpa</artifactId>
+	<artifactId>Bichontravel</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>sbrest0810_jpa</name>
+	<name>Bichontravel</name>
 	<description/>
 	<url/>
 	<licenses>
