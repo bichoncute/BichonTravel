@@ -103,18 +103,6 @@ public class ProductsFrontController {
 
             return "redirect:/web/memberlogin";
         }
-//        // 輸入數量超過ㄎ
-//        if (userId == 0) {
-//            model.addAttribute(
-//                    "errorMessage",
-//                    "密碼錯誤！或帳號已被刪除"
-//            );           
-//            // 保留 Email
-//            Users loginUser = new Users();
-//            loginUser.setEmail(users.getEmail());
-//            model.addAttribute("user", loginUser);
-//            return "member/login";
-//        }
         return ps.getProductsById(product_id)
                 .map(product -> {
                     model.addAttribute("product", product);
@@ -222,14 +210,11 @@ public class ProductsFrontController {
                 "UNPAID",
                 reserved_quantity
         );
-
-        // 如果這個商品原本在會員的願望清單中，
-        // 確認購買後就將它從願望清單移除
+        // 如果這個商品原本在會員的願望清單中，確認購買後就將它從願望清單移除
         cartItemsService.deleteByUserAndProduct(
                 user_id,
                 product_id
         );
-
         redirectAttributes.addFlashAttribute(
                 "successMessage",
                 "訂單建立成功！"
