@@ -3,9 +3,7 @@ package com.example.demo.model;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -44,16 +42,12 @@ public class Users {
     private LocalDateTime created_at;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updated_at;  
-    
-    //@OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST,
-    // targetEntity=Orders.class ,fetch = FetchType.LAZY)
     @OneToMany(mappedBy = "users",cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
     	private List<Orders> orders = new ArrayList<>();
     @OneToMany(mappedBy = "users",cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
 	private List<Cart_items> cart_items = new ArrayList<>();
 	@OneToMany(mappedBy = "users",cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
 	private List<Browse_history> browse_history = new ArrayList<>();
-    //private List<Orders> orders = new ArrayList<>();
     
     
     public Users() {}
@@ -69,7 +63,7 @@ public class Users {
     
     @Override
     public String toString() {
-        return "Users{id='" + id
+        	return "Users{id='" + id
                 + "', name='" + name
                 + "', role='" + role
                 + "', email='" + email
@@ -80,14 +74,14 @@ public class Users {
                 + "', updated_at='" + updated_at
                 + "}";
     }
- // 新增資料之前執行
+
     @PrePersist
     protected void onCreate() {
         LocalDateTime now = LocalDateTime.now();
         this.created_at = now;
         this.updated_at = now;
     }
-    // 更新資料之前執行
+
     @PreUpdate
     protected void onUpdate() {
         this.updated_at = LocalDateTime.now();
