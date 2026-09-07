@@ -92,14 +92,6 @@ public class ProductsWebController {
     	        products.getFly_day(),
     	        products.getBack_day()
     	);
-//    		ps.updateProducts(products.getProduct_id(),products.getName(),
-//    				products.getAdult_double_price(),products.getAdult_single_price(), 
-//    				products.getInfant_price(),products.getDeparture_airport(), 
-//    				products.getDestination(), products.getMax_capacity(), 
-//    				products.getAvailable_capacity(),products.getDescription(), 
-//    				products.getNotification(),products.getProduct_status(), 
-//    				products.getFly_day(), products.getBack_day()
-//    				);
         redirectAttributes.addFlashAttribute("successMessage", "商品更新成功！");
         return "redirect:/web/products/" + product_id;
     }
