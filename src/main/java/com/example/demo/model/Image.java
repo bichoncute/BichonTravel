@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "Image") // 對應資料庫中的 Image 表
+@Table(name = "Image") 
 public class Image {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +31,7 @@ public class Image {
 	private Integer image_id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)        // 資料庫中的外鍵欄位名稱
+    @JoinColumn(name = "product_id", nullable = false)       
     @JsonIgnoreProperties("images")
 	private Products products;
 	
@@ -45,15 +45,12 @@ public class Image {
 	@Column(name = "updated_at")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updated_at;
-    
-	// 新增資料之前執行
     @PrePersist
     protected void onCreate() {
         LocalDateTime now = LocalDateTime.now();
         this.created_at = now;
         this.updated_at = now;
     }
-    // 更新資料之前執行
     @PreUpdate
     protected void onUpdate() {
         this.updated_at = LocalDateTime.now();
