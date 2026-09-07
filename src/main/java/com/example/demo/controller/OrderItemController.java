@@ -103,18 +103,6 @@ public class OrderItemController {
     	                order_item.getInfant_qty()
     	        );
 
-//        		Order_item createdOrder_item =
-//                orderItemService.createOrder_items(
-//                        order_id,
-//                        product_id,
-//                        order_item.getAdult_double_qty(),
-//                        order_item.getAdult_single_qty(),
-//                        order_item.getInfant_qty(),
-//                        order_item.getAdult_double_unit_price(),
-//                        order_item.getAdult_single_unit_price(),
-//                        order_item.getInfant_unit_price()
-//                );
-
         redirectAttributes.addFlashAttribute(
                 "successMessage",
                 "訂單明細建立成功！"
@@ -148,19 +136,15 @@ public class OrderItemController {
         if (orderId == null) {
             throw new RuntimeException("編輯時必須指定訂單 ID");
         }     
-        Integer productId = (order_item.getProducts() != null) ? 
-				order_item.getProducts().getProduct_id() : null;
+        Integer productId = (order_item.getProducts() != null) ? order_item.getProducts().getProduct_id() : null;
 		if (productId == null) {
 			throw new RuntimeException("編輯時必須指定商品 ID");
 		}       
         orderItemService.updateOrder_items(order_item_id, orderId, productId,
-        		 	 order_item.getAdult_double_qty(),
+        		 order_item.getAdult_double_qty(),
                  order_item.getAdult_single_qty(),
-                 order_item.getInfant_qty()/*,
-                 order_item.getAdult_double_unit_price(),
-                 order_item.getAdult_single_unit_price(),
-                 order_item.getInfant_unit_price() */  
-    			);
+                 order_item.getInfant_qty()
+    	);
         redirectAttributes.addFlashAttribute("successMessage", "訂單明細更新成功！");
         return "redirect:/web/order_item/dashboard/" + order_item_id;
     }
