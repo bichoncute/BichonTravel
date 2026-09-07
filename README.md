@@ -186,6 +186,7 @@
 * 訂單總金額
 
 其中商品購買當下的票價會被記錄為**價格快照（Price Snapshot）**，避免商品價格後續修改而影響已建立的訂單金額。
+使用樂觀鎖，並同時做高併發環境測試 : src\test\java\com\example\demo\HighConcurrencyTest.java
 
 ---
 
