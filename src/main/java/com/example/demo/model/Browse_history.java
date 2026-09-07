@@ -46,7 +46,7 @@ public class Browse_history {
 	private Users users;
 	
 	@ManyToOne(fetch = FetchType.LAZY)  
-    @JoinColumn(name = "product_id", nullable = false)        // 資料庫中的外鍵欄位名稱
+    @JoinColumn(name = "product_id", nullable = false)       
     @JsonIgnoreProperties("browse_history")
 	private Products products;
 
