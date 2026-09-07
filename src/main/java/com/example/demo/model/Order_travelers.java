@@ -22,11 +22,11 @@ import lombok.NoArgsConstructor;
 public class Order_travelers {
 	@Id
 	@Column(name = "travelers_id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)  // MySQL AUTO_INCREMENT
+    @GeneratedValue(strategy = GenerationType.IDENTITY) 
     private Integer travelers_id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false)        // 資料庫中的外鍵欄位名稱
+    @JoinColumn(name = "order_id", nullable = false)       
     @JsonIgnoreProperties("order_travelers")
 	private Orders orders;
 
