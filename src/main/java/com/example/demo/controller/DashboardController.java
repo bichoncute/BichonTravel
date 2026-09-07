@@ -149,7 +149,7 @@ public class DashboardController {
         userService.updateUser(
                 userId,
                 users.getName(),
-                users.getEmail(),
+                //users.getEmail(),
                 "dashboard",//users.getRole(),
                 users.getPhone(),
                 users.getPassword_hash(),
