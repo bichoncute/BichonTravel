@@ -1,4 +1,4 @@
-# 🐶 比熊旅遊 Bichon Travel
+#  [比熊旅遊] Bichon Travel
 
 > **On-line Travel Booking System**
 > 線上旅遊購票平台網站
