@@ -13,22 +13,6 @@ import com.example.demo.model.Cart_items;
 
 @Repository
 public interface BrowseHistoryRepository extends JpaRepository<Browse_history, Integer>  {
-	 // JpaRepository<Product, Long> 的兩個泛型（Generic）：
-    //   第一個 Product → 要操作的 Entity 型別
-    //   第二個 Long    → Product.id 的型別
-    //
-    // 繼承後自動擁有：
-    //   save()、findById()、findAll()、deleteById()、existsById()、count() 等
-    //
-    // Day 2 會在這裡新增自訂查詢方法
-	//List<Browse_history> findByNameContaining(String keyword);
-	//List<User> findById(String id);
-	
-	
-//	Optional<Browse_history> findByUsers_IdAndProducts_Product_id(
-//	        Integer user_id,
-//	        Integer product_id
-//	);
 	@Query("""
 	        SELECT b
 	        FROM Browse_history b
