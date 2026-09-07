@@ -1,6 +1,4 @@
 package com.example.demo.service;
-
-
 import com.example.demo.model.Products;
 import com.example.demo.repository.ProductRepository;
 
@@ -14,18 +12,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ProductsService /*implements CommandLineRunner*/ {
+public class ProductsService {
 	@Autowired
     private ProductRepository pr;
     
-//    public UserService(UserRepository userRepository) {
-//        this.userRepository = userRepository;
-//    }
-    
-   
-//    public User createUser(User user) {
-//        return userRepository.save(user);
-//    }
     public Products createProduct(String name, BigDecimal adult_double_price, 
     			BigDecimal adult_single_price, BigDecimal infant_price,
 			String departure_airport, String destination, Integer max_capacity, 
@@ -61,11 +51,8 @@ public class ProductsService /*implements CommandLineRunner*/ {
 			String product_status, LocalDate fly_day, LocalDate back_day
 			) {
         Optional<Products> existingUser = pr.findById(product_id);
-
         if (existingUser.isPresent()) {
-
         	Products product = existingUser.get();
-
         	product.setName(name);
         	product.setAdult_double_price(adult_double_price);
         	product.setAdult_single_price(adult_single_price);
@@ -79,21 +66,12 @@ public class ProductsService /*implements CommandLineRunner*/ {
         	product.setProduct_status(product_status);
         	product.setFly_day(fly_day);
         	product.setBack_day(back_day);
-        	//product.setProduct_version(product_version);
             return pr.save(product);
         }
 
         throw new RuntimeException("商品不存在: " + product_id);
     }
       
-    
-//    public boolean deleteProducts(Integer product_id) {
-//    	if (getProductsById(product_id) != null) {
-//    		pr.deleteById(product_id);
-//            return true;
-//        }
-//        return false;
-//    }
     public boolean deleteProducts(Integer product_id) {
         if (pr.existsById(product_id)) {
             pr.deleteById(product_id);
@@ -104,25 +82,4 @@ public class ProductsService /*implements CommandLineRunner*/ {
     public long getProductsCount() {
         return pr.count();
     }
-//    @Override
-//	public void run(String... args) throws Exception {
-//		// TODO Auto-generated method stub
-//		if(pr.count()==0) {
-//			pr.save(new Products(
-//				    "日本團",
-//				    new BigDecimal("50000.00"),
-//				    new BigDecimal("60000.00"),
-//				    new BigDecimal("10000.00"),
-//				    "桃園國際機場",
-//				    "東京",
-//				    30,
-//				    30,
-//				    "商品描述",
-//				    "注意事項",
-//				    "Available",
-//				    LocalDate.of(2026, 9, 12),
-//				    LocalDate.of(2026, 9, 17)    
-//				));	
-//		}
-//	}
 }
