@@ -13,15 +13,6 @@ import java.util.Optional;
 public class UserService {
 	@Autowired
     private UserRepository userRepository;
-    
-//    public UserService(UserRepository userRepository) {
-//        this.userRepository = userRepository;
-//    }
-    
-   
-//    public User createUser(User user) {
-//        return userRepository.save(user);
-//    }
     public Users createUser(String name,String email, String role,String phone,
     		String password_hash,String account_status) {
     	
@@ -47,10 +38,6 @@ public class UserService {
     		return userRepository.findByEmail(inputemail).isPresent() ? 0 : 1;
     	
     }
-//    public String getUserEmailbyId(Integer userId) {
-//    		String email = userRepository.findById(userId);
-//    		return email;
-//    }
     public Integer loginprocess(String inputemail, String inputpassword) {
 		Optional<Users> existingUser = userRepository.findByEmail(inputemail);
 		 if (existingUser.isPresent()) {
