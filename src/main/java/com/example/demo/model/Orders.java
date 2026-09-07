@@ -24,15 +24,15 @@ import jakarta.persistence.Table;
 import lombok.Data;
 @Data
 @Entity
-@Table(name = "Orders")       // 對應資料庫中的 Order 表
+@Table(name = "Orders")     
 public class Orders {
 	@Id
 	@Column(name = "order_id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)  // MySQL AUTO_INCREMENT
+    @GeneratedValue(strategy = GenerationType.IDENTITY)  
 	private Integer order_id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)  
-    @JoinColumn(name = "user_id", nullable = false)        // 資料庫中的外鍵欄位名稱
+    @JoinColumn(name = "user_id", nullable = false)      
     @JsonIgnoreProperties("orders")
 	private Users users;
 	
@@ -51,7 +51,6 @@ public class Orders {
     @Column(name = "updated_at")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updated_at;
-    
     
     @OneToMany(
     	    mappedBy = "orders",
@@ -79,7 +78,7 @@ public class Orders {
         this.created_at = now;
         this.updated_at = now;
     }
-    // 更新資料之前執行
+
     @PreUpdate
     protected void onUpdate() {
         this.updated_at = LocalDateTime.now();
