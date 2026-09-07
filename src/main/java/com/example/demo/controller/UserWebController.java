@@ -92,7 +92,6 @@ public class UserWebController {
         userService.updateUser(
                 id,
                 users.getName(),
-                //users.getEmail(),
                 users.getRole(),
                 users.getPhone(),
                 users.getPassword_hash(),
