@@ -10,14 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.example.demo.model.Products;
 @Repository
-public interface ProductRepository extends JpaRepository<Products, Integer> {
-	  // 查詢出發日期介於開始日期與結束日期之間的商品
-	//SELECT * FROM products WHERE fly_day BETWEEN startDate AND endDate;
-//	 List<Products> findByFly_dayBetween(
-//		        LocalDate startDate,
-//		        LocalDate endDate
-//		    );
-	 
+public interface ProductRepository extends JpaRepository<Products, Integer> {	
 	 @Query("""
 		        SELECT p
 		        FROM Products p
@@ -28,4 +21,3 @@ public interface ProductRepository extends JpaRepository<Products, Integer> {
 		        @Param("endDate") LocalDate endDate
 		    );
 }
-
