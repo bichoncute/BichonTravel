@@ -605,5 +605,627 @@ BichonTravel
 
 # 🐶 Bichon Travel
 
+> **Online Travel Booking System**
+
+Bichon Travel is an online travel booking platform developed with **Java, Spring Boot, Thymeleaf, and MySQL**.
+
+The system provides three user roles — **Visitor, Member, and Administrator** — with different permissions and workflows.
+
+The project implements a complete travel booking process, including travel package browsing, shopping cart management, order creation, traveler information, simulated payment, payment countdown, and administrator management.
+
+The concept of Bichon Travel is inspired by the joy and healing energy of Bichon Frise dogs, combining a friendly travel experience with a simple and intuitive online booking system.
+
+---
+
+## 🌐 Live Demo
+
+### 🚀 Render Deployment
+
+**Bichon Travel Online Demo**
+
+[https://bichontravel-2.onrender.com/web/frontproducts](https://bichontravel-2.onrender.com/web/frontproducts?utm_source=chatgpt.com)
+
+---
+
+# ✨ Features
+
+* 👤 Three user roles: Visitor, Member, and Administrator
+* 🔎 Travel package browsing and searching
+* 🛒 Shopping cart
+* 🛍️ Buy Now function
+* 🧾 Order creation and management
+* 📋 Order detail management
+* 🧳 Traveler information management
+* 💳 Simulated payment process
+* ⏱️ 30-second payment countdown
+* ✈️ Seat / ticket availability management
+* 📚 Browsing history
+* 👤 Member profile management
+* 🛠️ Administrator travel package management
+* 👥 Administrator member management
+* 📋 Administrator order management
+* 🧳 Administrator traveler management
+* 💰 Administrator payment management
+* 🗑️ Soft-delete mechanism for selected data
+
+---
+
+# 🛠️ Tech Stack
+
+| Category             | Technology                  | Version | Purpose                                 |
+| -------------------- | --------------------------- | ------: | --------------------------------------- |
+| Programming Language | Java                        |      21 | Backend development                     |
+| Frontend             | Thymeleaf                   |   3.1.5 | Server-side HTML rendering              |
+| Frontend             | HTML5                       |       - | Web page structure                      |
+| Frontend             | CSS3                        |       - | Web page styling                        |
+| Frontend             | JavaScript                  |       - | Frontend interactions and countdown     |
+| Backend              | Spring Boot                 |   4.1.0 | Java web application framework          |
+| ORM                  | Spring Data JPA / Hibernate |       - | Database access and ORM                 |
+| Web Server           | Tomcat                      |    10.1 | Embedded web server                     |
+| Java Library         | Lombok                      |   3.1.0 | Reduce boilerplate code                 |
+| Database             | MySQL                       |  8.0.47 | Relational database                     |
+| API                  | RESTful API                 |       - | API development                         |
+| API Documentation    | Swagger                     |   3.1.0 | API documentation and testing           |
+| API Testing          | Postman                     | 12.22.6 | API testing                             |
+| Build Tool           | Maven                       |       - | Project build and dependency management |
+| IDE                  | Eclipse                     | 2026-06 | Development environment                 |
+| Containerization     | Docker / Docker Compose     |       - | Local containerized environment         |
+| Deployment           | Render                      |       - | Cloud deployment                        |
+
+The technology stack and versions are based on the project documentation.
+
+---
+
+# 👥 User Roles
+
+The system is divided into three main roles:
+
+## 👀 Visitor
+
+Visitors can browse the website without registering or logging in.
+
+Available functions include:
+
+* Browse travel packages
+* Search travel packages
+* View travel package details
+
+Visitors must log in as a member before they can proceed with purchasing and checkout.
+
+---
+
+## 👤 Member
+
+Members can access the complete travel booking workflow.
+
+Main functions:
+
+* Browse travel packages
+* Search travel packages
+* View travel package details
+* Add products to the shopping cart
+* Buy Now
+* Create orders
+* View order details
+* Add traveler information
+* Proceed to payment
+* View personal orders
+* Manage shopping cart
+* View browsing history
+* Edit personal information
+* Log out
+
+---
+
+## 👑 Administrator
+
+Administrators can access the backend management system.
+
+Main functions:
+
+* Travel package management
+* Member management
+* Order management
+* Order detail management
+* Traveler management
+* Payment management
+
+The administrator also has access to general member functions.
+
+---
+
+# 🛒 Member Booking Flow
+
+The main booking workflow is:
+
+```text
+Travel Package Homepage
+          ↓
+Browse / Search Travel Packages
+          ↓
+View Travel Package Details
+          ↓
+Add to Cart / Buy Now
+          ↓
+Enter Number of Travelers
+          ↓
+Create Order
+          ↓
+Review Order Details
+          ↓
+Enter Traveler Information
+          ↓
+Proceed to Payment
+          ↓
+30-Second Payment Countdown
+          ↓
+     ┌────┴────┐
+     ↓         ↓
+Payment       Timeout
+Success        ↓
+     ↓       Payment Expired
+Order         ↓
+Confirmed    Order Failed
+```
+
+---
+
+# ✈️ Travel Package Purchase
+
+When purchasing a travel package, members need to enter:
+
+* Number of adults in double rooms
+* Number of adults in single rooms
+* Number of infants
+
+Each traveler occupies one available seat/ticket.
+
+The system validates the following conditions:
+
+* Total number of travelers must be greater than 0
+* Number of travelers cannot be negative
+* Total number of travelers cannot exceed the available capacity
+
+Invalid input will trigger a system validation message.
+
+---
+
+# 🧾 Orders & Order Details
+
+After confirming the purchase, the system creates an order and its corresponding order details.
+
+Order details include:
+
+* Number of adults in double rooms
+* Number of adults in single rooms
+* Number of infants
+* Double-room adult price
+* Single-room adult price
+* Infant price
+* Total order amount
+
+The prices at the time of checkout are stored as a **price snapshot** in the order details.
+
+This allows the system to preserve the original purchase price even if the travel package price is changed later.
+
+---
+
+# 🧳 Traveler Information
+
+After creating an order, members need to provide traveler information.
+
+The system supports information such as:
+
+* Passport number
+* Domestic contact phone number
+* International contact Line account
+* Special requirements
+
+Members can:
+
+* Add travelers
+* View traveler details
+* Edit traveler information
+* Delete traveler information
+
+After completing the traveler information, members can proceed to payment.
+
+---
+
+# 💳 Payment System
+
+This project uses a **simulated payment process** and does not connect to a real payment gateway.
+
+Supported payment methods include:
+
+* CASH
+* CREDIT_CARD
+* ATM
+* MOBILE_PAY
+
+The payment page uses a **30-second countdown timer**.
+
+The countdown does not restart when the page is refreshed.
+
+If the member does not complete the payment within the specified time, the payment expires and the booking process is terminated.
+
+---
+
+# 👤 Member Center
+
+After logging in, members can access their personal member center.
+
+## My Orders
+
+Members can view their own orders and related order information.
+
+## My Shopping Cart
+
+Members can manage travel packages they are interested in.
+
+## Browsing History
+
+The system records travel packages viewed by members.
+
+If a member views the same travel package multiple times, the system keeps the latest browsing record instead of creating duplicate records.
+
+Members can directly:
+
+* Buy Now
+* Add to Cart
+
+from their browsing history.
+
+## Account Settings
+
+Members can edit their personal information.
+
+## Logout
+
+Members can securely log out of their account.
+
+---
+
+# 🛠️ Administrator Backend
+
+The administrator backend provides management functions for the travel booking system.
+
+```text
+Administrator Backend
+│
+├── Travel Package Management
+├── Member Management
+├── Order Management
+├── Order Detail Management
+├── Traveler Management
+└── Payment Management
+```
+
+---
+
+# 📦 Travel Package Management
+
+Administrators can:
+
+* View all travel packages
+* Create new travel packages
+* Edit travel package information
+* View travel package details
+* Manage prices
+* Manage available capacity
+* Manage destinations
+* Manage travel package descriptions
+
+The system also validates price and capacity fields when creating or editing travel packages.
+
+---
+
+# 👥 Member Management
+
+Administrators can manage member accounts and view information such as:
+
+* Name
+* Email
+* Role
+* Phone number
+* Account status
+
+Available operations include:
+
+* Create members
+* View members
+* Edit members
+* Delete members
+
+The system uses **soft delete** for member deletion.
+
+Instead of physically removing a member from the database, the account status is changed to:
+
+```text
+disabled
+```
+
+A disabled account can no longer be used as an active member account.
+
+---
+
+# 📋 Order Management
+
+Administrators can:
+
+* View all orders
+* Create orders
+* View order details
+* View order items
+* View travelers associated with an order
+* Soft-delete orders
+
+Order details include:
+
+* Total order amount
+* Order status
+* Number of travelers
+* Payment deadline
+* Created time
+* Updated time
+
+---
+
+# 🧳 Traveler Management
+
+Administrators can view traveler information associated with all orders.
+
+Traveler information includes:
+
+* Passport number
+* Phone number
+* Line account
+* Special requirements
+
+Administrators can:
+
+* View traveler details
+* Edit traveler information
+* Delete traveler information
+
+---
+
+# 💰 Payment Management
+
+Administrators can manage payment records in the backend.
+
+Available functions include:
+
+* View payment records
+* View payment details
+* Edit payment records
+* Modify payment method
+* Modify payment status
+* Modify payment amount
+
+Payment details include:
+
+* Total payment amount
+* Payment status
+* Payment countdown start time
+* Payment completion time
+
+---
+
+# 🗄️ Database
+
+The project uses:
+
+```text
+MySQL 8.0.47
+```
+
+Database schema:
+
+```text
+bichontravel_db
+```
+
+Main database entities include:
+
+```text
+Users
+Browse_history
+Cart_items
+Products
+Image
+Orders
+Order_item
+Order_travelers
+Payments
+```
+
+These tables are used to manage:
+
+* Users
+* Travel packages
+* Product images
+* Shopping cart items
+* Browsing history
+* Orders
+* Order details
+* Travelers
+* Payments
+
+---
+
+# 🐳 Running Locally with Docker
+
+The project supports running the application using **Docker Compose**.
+
+Make sure Docker Desktop is installed and running before starting the application.
+
+## 1. Build the Docker Image
+
+Open a terminal in the project root directory and run:
+
+```bash
+docker compose build --no-cache
+```
+
+---
+
+## 2. Start the Application
+
+```bash
+docker compose up
+```
+
+After the containers have started successfully, open:
+
+```text
+http://localhost:8080/web/frontproducts
+```
+
+in your browser.
+
+---
+
+## 3. Stop the Application
+
+To stop and remove the Docker Compose containers:
+
+```bash
+docker compose down
+```
+
+---
+
+## 🔄 Complete Docker Workflow
+
+If you want to rebuild the project from scratch:
+
+```bash
+docker compose down
+
+docker compose build --no-cache
+
+docker compose up
+```
+
+---
+
+# 📁 Project Structure
+
+```text
+BichonTravel
+│
+├── src
+│   ├── main
+│   │   ├── java
+│   │   │   └── com.example.demo
+│   │   │       ├── config
+│   │   │       ├── controller
+│   │   │       ├── model
+│   │   │       ├── repository
+│   │   │       └── service
+│   │   │
+│   │   └── resources
+│   │       ├── static
+│   │       │   ├── css
+│   │       │   ├── js
+│   │       │   └── images
+│   │       │
+│   │       ├── templates
+│   │       │   ├── member
+│   │       │   ├── admin
+│   │       │   ├── payments
+│   │       │   └── ...
+│   │       │
+│   │       └── application.properties
+│   │
+│   └── test
+│
+├── Dockerfile
+├── docker-compose.yml
+├── pom.xml
+└── README.md
+```
+
+---
+
+# 🔐 Permission Overview
+
+| Function                    | Visitor | Member | Admin |
+| --------------------------- | :-----: | :----: | :---: |
+| Browse Travel Packages      |    ✅    |    ✅   |   ✅   |
+| Search Travel Packages      |    ✅    |    ✅   |   ✅   |
+| View Package Details        |    ✅    |    ✅   |   ✅   |
+| Add to Cart                 |    ❌    |    ✅   |   ✅   |
+| Buy Now                     |    ❌    |    ✅   |   ✅   |
+| Create Orders               |    ❌    |    ✅   |   ✅   |
+| View Personal Orders        |    ❌    |    ✅   |   ✅   |
+| Manage Personal Information |    ❌    |    ✅   |   ✅   |
+| Browsing History            |    ❌    |    ✅   |   ✅   |
+| Travel Package Management   |    ❌    |    ❌   |   ✅   |
+| Member Management           |    ❌    |    ❌   |   ✅   |
+| Order Management            |    ❌    |    ❌   |   ✅   |
+| Order Detail Management     |    ❌    |    ❌   |   ✅   |
+| Traveler Management         |    ❌    |    ❌   |   ✅   |
+| Payment Management          |    ❌    |    ❌   |   ✅   |
+
+---
+
+# 📌 Project Information
+
+| Item             | Details                               |
+| ---------------- | ------------------------------------- |
+| Project          | Bichon Travel                         |
+| Type             | Online Travel Booking System          |
+| Language         | Java 21                               |
+| Framework        | Spring Boot 4.1.0                     |
+| Frontend         | Thymeleaf / HTML5 / CSS3 / JavaScript |
+| Database         | MySQL 8.0.47                          |
+| Build Tool       | Maven                                 |
+| Containerization | Docker / Docker Compose               |
+| Deployment       | Render                                |
+
+---
+
+# 👨‍💻 Developer
+
+**劉懿萱**
+
+2026
+
+---
+
+# 🎯 Project Goal
+
+The goal of Bichon Travel is to develop a complete online travel booking platform and integrate the following processes into a single system:
+
+```text
+Travel Package Browsing
+        ↓
+Shopping
+        ↓
+Order Creation
+        ↓
+Traveler Information
+        ↓
+Payment
+        ↓
+Order Management
+        ↓
+Administrator Management
+```
+
+Through this project, I implemented a practical web application using **Java and Spring Boot**, while gaining experience in database design, MVC architecture, RESTful APIs, Thymeleaf frontend development, authentication and authorization, Docker containerization, and cloud deployment.
+
+---
+
+# 🐶 Bichon Travel
+
+> **Travel with happiness.**
+> **Explore the world with Bichon Travel. 🐾**
+
+
+# 🐶 Bichon Travel
+
 > **Travel with happiness.
 > Explore the world with Bichon Travel. 🐾**
