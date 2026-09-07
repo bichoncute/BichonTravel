@@ -27,18 +27,16 @@ import lombok.NoArgsConstructor;
 public class Order_item {
 	@Id
 	@Column(name = "order_item_id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)  // MySQL AUTO_INCREMENT
+    @GeneratedValue(strategy = GenerationType.IDENTITY)  
     private Integer order_item_id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false)        // 資料庫中的外鍵欄位名稱
+    @JoinColumn(name = "order_id", nullable = false)      
     @JsonIgnoreProperties("order_item")
 	private Orders orders;
-	//@Column(name = "order_id" )   
-    //private Integer order_id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)        // 資料庫中的外鍵欄位名稱
+    @JoinColumn(name = "product_id", nullable = false)       
     @JsonIgnoreProperties("order_item")
 	private Products products;
 
@@ -48,29 +46,25 @@ public class Order_item {
     private Integer adult_single_qty;
 	@Column(name = "infant_qty", nullable = false)   
     private Integer infant_qty;
-	@Column(name = "adult_double_unit_price", precision = 10, scale = 2, nullable = false)   // NOT NULL：價格必填
+	@Column(name = "adult_double_unit_price", precision = 10, scale = 2, nullable = false)  
     private BigDecimal adult_double_unit_price;
-	@Column(name = "adult_single_unit_price", precision = 10, scale = 2, nullable = false)   // NOT NULL：價格必填
+	@Column(name = "adult_single_unit_price", precision = 10, scale = 2, nullable = false)  
     private BigDecimal adult_single_unit_price;
-	@Column(name = "infant_unit_price", precision = 10, scale = 2, nullable = false)   // NOT NULL：價格必填
+	@Column(name = "infant_unit_price", precision = 10, scale = 2, nullable = false) 
     private BigDecimal infant_unit_price;
-	@Column(name = "subtotal", precision = 10, scale = 2)   // NOT NULL：價格必填
+	@Column(name = "subtotal", precision = 10, scale = 2) 
     private BigDecimal subtotal;
 	
 	@PrePersist
 	@PreUpdate
 	public void calculateSubtotal() {
 		BigDecimal total = BigDecimal.ZERO;
-		// 1. 計算雙人房成人總價 (數量 * 單價)
 		if (adult_double_qty != null && adult_double_unit_price != null) {
 			total = total.add(BigDecimal.valueOf(adult_double_qty).multiply(adult_double_unit_price));
 		}		
-		// 2. 計算單人房成人總價 (數量 * 單價)
 		if (adult_single_qty != null && adult_single_unit_price != null) {
 			total = total.add(BigDecimal.valueOf(adult_single_qty).multiply(adult_single_unit_price));
 		}
-		
-		// 3. 計算嬰兒總價 (數量 * 單價)
 		if (infant_qty != null && infant_unit_price != null) {
 			total = total.add(BigDecimal.valueOf(infant_qty).multiply(infant_unit_price));
 		}
