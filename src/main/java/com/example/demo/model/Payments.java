@@ -30,11 +30,11 @@ import lombok.NoArgsConstructor;
 public class Payments {
 	@Id
 	@Column(name = "payment_id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)  // MySQL AUTO_INCREMENT
+    @GeneratedValue(strategy = GenerationType.IDENTITY) 
     private Integer payment_id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false)        // 資料庫中的外鍵欄位名稱
+    @JoinColumn(name = "order_id", nullable = false)       
     @JsonIgnoreProperties("payments")
 	private Orders orders;
 	
@@ -44,7 +44,7 @@ public class Payments {
     private String payment_status;
 	@Column(name = "transaction_id", length = 100)   
     private String transaction_id;
-	@Column(name = "amount", nullable = false, precision = 10, scale = 2)   // NOT NULL：價格必填
+	@Column(name = "amount", nullable = false, precision = 10, scale = 2)  
     private BigDecimal amount;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime start_at;
@@ -76,14 +76,13 @@ public class Payments {
                 + "}";
     }
 
-	// 新增資料之前執行
     @PrePersist
     protected void onCreate() {
         LocalDateTime now = LocalDateTime.now();
         this.created_at = now;
         this.updated_at = now;
     }
-    // 更新資料之前執行
+
     @PreUpdate
     protected void onUpdate() {
         this.updated_at = LocalDateTime.now();
